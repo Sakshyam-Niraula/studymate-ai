@@ -8,16 +8,16 @@ import json
 import uuid
 
 
-# ==========================================
+# =========================================================
 # LOAD ENVIRONMENT VARIABLES
-# ==========================================
+# =========================================================
 
 load_dotenv()
 
 
-# ==========================================
+# =========================================================
 # FLASK APP
-# ==========================================
+# =========================================================
 
 app = Flask(__name__)
 
@@ -27,15 +27,15 @@ app.secret_key = os.environ.get(
 )
 
 
-# ==========================================
+# =========================================================
 # CONFIGURATION
-# ==========================================
+# =========================================================
 
 UPLOAD_FOLDER = "uploads"
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-# Maximum upload size: 20 MB
+# Maximum PDF size: 20 MB
 app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024
 
 ALLOWED_EXTENSIONS = {"pdf"}
@@ -46,19 +46,14 @@ os.makedirs(
 )
 
 
-# ==========================================
-# GEMINI
-# ==========================================
+# =========================================================
+# GEMINI CONFIGURATION
+# =========================================================
 
-api_key = os.environ.get(
-    "GEMINI_API_KEY"
-)
+api_key = os.environ.get("GEMINI_API_KEY")
 
 if not api_key:
-
-    print(
-        "WARNING: GEMINI_API_KEY is not configured."
-    )
+    print("WARNING: GEMINI_API_KEY is not configured.")
 
 client = (
     genai.Client(api_key=api_key)
@@ -66,12 +61,14 @@ client = (
     else None
 )
 
+# IMPORTANT:
+# Gemini 2.5 Flash is no longer available to new users.
 MODEL_NAME = "models/gemini-3.6-flash"
 
 
-# ==========================================
+# =========================================================
 # USER SESSION
-# ==========================================
+# =========================================================
 
 def get_user_id():
 
@@ -84,9 +81,9 @@ def get_user_id():
     return session["user_id"]
 
 
-# ==========================================
-# USER FOLDER
-# ==========================================
+# =========================================================
+# USER-SPECIFIC FOLDER
+# =========================================================
 
 def get_user_folder():
 
@@ -105,9 +102,9 @@ def get_user_folder():
     return folder
 
 
-# ==========================================
+# =========================================================
 # STUDY MATERIAL PATH
-# ==========================================
+# =========================================================
 
 def get_material_path():
 
@@ -117,9 +114,9 @@ def get_material_path():
     )
 
 
-# ==========================================
+# =========================================================
 # CHECK FILE
-# ==========================================
+# =========================================================
 
 def allowed_file(filename):
 
@@ -132,9 +129,9 @@ def allowed_file(filename):
     )
 
 
-# ==========================================
+# =========================================================
 # HOME
-# ==========================================
+# =========================================================
 
 @app.route("/")
 def home():
@@ -144,9 +141,9 @@ def home():
     )
 
 
-# ==========================================
+# =========================================================
 # UPLOAD PDF
-# ==========================================
+# =========================================================
 
 @app.route(
     "/upload",
@@ -154,9 +151,7 @@ def home():
 )
 def upload():
 
-    pdf = request.files.get(
-        "pdf"
-    )
+    pdf = request.files.get("pdf")
 
     if not pdf or pdf.filename == "":
 
@@ -166,9 +161,7 @@ def upload():
         )
 
 
-    if not allowed_file(
-        pdf.filename
-    ):
+    if not allowed_file(pdf.filename):
 
         return render_template(
             "index.html",
@@ -176,12 +169,9 @@ def upload():
         )
 
 
-    # Secure the original filename
-
     safe_filename = secure_filename(
         pdf.filename
     )
-
 
     if not safe_filename:
 
@@ -191,27 +181,19 @@ def upload():
         )
 
 
-    # User-specific folder
-
     user_folder = get_user_folder()
-
 
     filepath = os.path.join(
         user_folder,
         safe_filename
     )
 
-
-    pdf.save(
-        filepath
-    )
+    pdf.save(filepath)
 
 
     try:
 
-        document = fitz.open(
-            filepath
-        )
+        document = fitz.open(filepath)
 
         text = ""
 
@@ -235,13 +217,10 @@ def upload():
         document.close()
 
 
-        # Empty/scanned PDF
-
         if not text.strip():
 
-            os.remove(
-                filepath
-            )
+            if os.path.exists(filepath):
+                os.remove(filepath)
 
             return render_template(
                 "index.html",
@@ -252,8 +231,6 @@ def upload():
                 )
             )
 
-
-        # Save material for THIS USER ONLY
 
         material_path = get_material_path()
 
@@ -267,33 +244,19 @@ def upload():
             file.write(text)
 
 
-        print(
-            "\n=============================="
-        )
-
-        print(
-            "PDF UPLOAD SUCCESS"
-        )
-
-        print(
-            "=============================="
-        )
-
+        print("\n==============================")
+        print("PDF UPLOAD SUCCESS")
+        print("==============================")
         print(
             f"User: {get_user_id()[:8]}"
         )
-
         print(
             f"File: {safe_filename}"
         )
-
         print(
             f"Characters: {len(text)}"
         )
-
-        print(
-            "==============================\n"
-        )
+        print("==============================\n")
 
 
         return render_template(
@@ -314,13 +277,8 @@ def upload():
             e
         )
 
-
         if os.path.exists(filepath):
-
-            os.remove(
-                filepath
-            )
-
+            os.remove(filepath)
 
         return render_template(
             "index.html",
@@ -331,9 +289,9 @@ def upload():
         )
 
 
-# ==========================================
+# =========================================================
 # GET STUDY MATERIAL
-# ==========================================
+# =========================================================
 
 def get_study_material():
 
@@ -356,9 +314,9 @@ def get_study_material():
         return file.read()
 
 
-# ==========================================
+# =========================================================
 # GEMINI FUNCTION
-# ==========================================
+# =========================================================
 
 def ask_gemini(prompt):
 
@@ -379,6 +337,14 @@ def ask_gemini(prompt):
 
         )
 
+
+        if not response.text:
+
+            return (
+                "Gemini returned an empty response."
+            )
+
+
         return response.text
 
 
@@ -394,9 +360,9 @@ def ask_gemini(prompt):
         )
 
 
-# ==========================================
+# =========================================================
 # ASK STUDYMATE
-# ==========================================
+# =========================================================
 
 @app.route(
     "/ask",
@@ -425,71 +391,39 @@ def ask():
 
         return render_template(
             "index.html",
-            answer=(
-                "Please upload a PDF first."
-            )
+            answer="Please upload a PDF first."
         )
 
 
     prompt = f"""
+You are StudyMate, an AI tutor.
 
-You are StudyMate, an AI tutor designed
-to help students understand their own
-study material.
+Your job is to help the student understand
+their uploaded study material.
 
 IMPORTANT RULES:
 
-1. Use ONLY the study material provided below.
-
+1. Use ONLY the study material.
 2. Do NOT use outside knowledge.
-
 3. Do NOT invent information.
-
-4. If the answer cannot be found in the
-study material, say exactly:
+4. If the answer cannot be found in the material,
+say exactly:
 
 "I couldn't find that information in your study material."
 
-5. Keep explanations appropriate for students.
-
+5. Keep explanations clear and appropriate for students.
 6. Make difficult concepts easier to understand.
-
 7. Be concise but useful.
 
-The student asked:
-
-{question}
-
-
-When the answer IS found in the material,
-structure your response like this when useful:
-
+When appropriate, structure the answer as:
 
 📚 Explanation
 
-Give a clear explanation based ONLY
-on the study material.
-
-
 💡 In simple words
-
-Explain the concept in simpler language.
-
 
 🎯 Exam tip
 
-Give one useful exam-focused point
-supported by the material.
-
-
 🧠 Quick check
-
-Ask one short question that tests
-whether the student understood the concept.
-
-
-Do not force every section if it doesn't
-make sense for the question.
 
 
 STUDY MATERIAL:
@@ -499,17 +433,13 @@ STUDY MATERIAL:
 
 ==============================
 
-
 STUDENT QUESTION:
 
 {question}
-
 """
 
 
-    answer = ask_gemini(
-        prompt
-    )
+    answer = ask_gemini(prompt)
 
 
     return render_template(
@@ -518,9 +448,9 @@ STUDENT QUESTION:
     )
 
 
-# ==========================================
+# =========================================================
 # GENERATE QUIZ
-# ==========================================
+# =========================================================
 
 @app.route(
     "/quiz",
@@ -533,14 +463,11 @@ def quiz():
         "5"
     )
 
-
     difficulty = request.form.get(
         "difficulty",
         "medium"
     )
 
-
-    # Validate number
 
     allowed_numbers = {
         "5",
@@ -554,8 +481,6 @@ def quiz():
 
         num_questions = "5"
 
-
-    # Validate difficulty
 
     allowed_difficulties = {
         "easy",
@@ -576,79 +501,67 @@ def quiz():
 
         return render_template(
             "index.html",
-            error=(
-                "Please upload a PDF first."
-            )
+            error="Please upload a PDF first."
         )
 
 
+    print("\n==============================")
+    print("GENERATING QUIZ")
+    print("==============================")
+    print(
+        f"Questions requested: {num_questions}"
+    )
+    print(
+        f"Difficulty: {difficulty}"
+    )
+    print(
+        f"Study material: {len(study_material)} characters"
+    )
+    print("==============================\n")
+
+
     prompt = f"""
+You are StudyMate, an educational quiz generator.
 
-You are StudyMate, an educational
-quiz generator.
+Create EXACTLY {num_questions} multiple-choice questions
+from the study material provided below.
 
-Create EXACTLY {num_questions}
-multiple-choice questions.
-
-Use ONLY the study material provided.
-
-Difficulty level:
-
+DIFFICULTY:
 {difficulty}
-
 
 IMPORTANT RULES:
 
 1. Use ONLY the study material.
-
-2. Do not use outside knowledge.
-
-3. Create exactly {num_questions} questions.
-
-4. Every question must have exactly
-4 options.
-
+2. Do NOT use outside knowledge.
+3. Create EXACTLY {num_questions} questions.
+4. Every question must have exactly 4 options.
 5. There must be exactly ONE correct answer.
+6. The correct answer must be represented by an integer.
+7. Use 0 for option A.
+8. Use 1 for option B.
+9. Use 2 for option C.
+10. Use 3 for option D.
+11. Include a short explanation.
+12. Return ONLY valid JSON.
+13. Do NOT use Markdown.
+14. Do NOT write ```json.
+15. Do NOT write anything before or after the JSON.
 
-6. Questions should test understanding,
-not just memorization.
-
-7. Include a short explanation.
-
-8. Return ONLY valid JSON.
-
-9. Do NOT use markdown.
-
-10. Do NOT include ```json.
-
-
-Return EXACTLY this structure:
+Return exactly this format:
 
 [
   {{
     "question": "Question text",
-
     "options": [
       "Option A",
       "Option B",
       "Option C",
       "Option D"
     ],
-
     "answer": 0,
-
     "explanation": "Short explanation"
   }}
 ]
-
-
-Answer indexes:
-
-0 = A
-1 = B
-2 = C
-3 = D
-
 
 STUDY MATERIAL:
 ==============================
@@ -656,13 +569,17 @@ STUDY MATERIAL:
 {study_material}
 
 ==============================
-
 """
 
 
-    quiz_text = ask_gemini(
-        prompt
-    )
+    quiz_text = ask_gemini(prompt)
+
+
+    print("\n==============================")
+    print("RAW QUIZ RESPONSE")
+    print("==============================")
+    print(quiz_text)
+    print("==============================\n")
 
 
     try:
@@ -670,22 +587,45 @@ STUDY MATERIAL:
         quiz_text = quiz_text.strip()
 
 
-        if quiz_text.startswith(
-            "```"
-        ):
+        # Remove Markdown code fences if Gemini
+        # accidentally adds them.
 
-            quiz_text = (
-                quiz_text
-                .replace(
-                    "```json",
-                    ""
-                )
-                .replace(
-                    "```",
-                    ""
-                )
-                .strip()
+        if quiz_text.startswith("```"):
+
+            lines = quiz_text.splitlines()
+
+            cleaned_lines = []
+
+            for line in lines:
+
+                if line.strip().startswith("```"):
+                    continue
+
+                cleaned_lines.append(line)
+
+            quiz_text = "\n".join(
+                cleaned_lines
+            ).strip()
+
+
+        # Find JSON array if Gemini adds
+        # accidental text around it.
+
+        start = quiz_text.find("[")
+
+        end = quiz_text.rfind("]")
+
+
+        if start == -1 or end == -1:
+
+            raise ValueError(
+                "No JSON array found."
             )
+
+
+        quiz_text = quiz_text[
+            start:end + 1
+        ]
 
 
         questions = json.loads(
@@ -708,12 +648,23 @@ STUDY MATERIAL:
         ):
 
             raise ValueError(
-                "AI did not generate the "
-                "requested number of questions."
+                f"Expected {num_questions} "
+                f"questions but received "
+                f"{len(questions)}."
             )
 
 
         for question in questions:
+
+            if not isinstance(
+                question,
+                dict
+            ):
+
+                raise ValueError(
+                    "Invalid question object."
+                )
+
 
             if "question" not in question:
 
@@ -729,13 +680,23 @@ STUDY MATERIAL:
                 )
 
 
+            if not isinstance(
+                question["options"],
+                list
+            ):
+
+                raise ValueError(
+                    "Options must be a list."
+                )
+
+
             if len(
                 question["options"]
             ) != 4:
 
                 raise ValueError(
-                    "Every question must "
-                    "have exactly 4 options."
+                    "Every question must have "
+                    "exactly 4 options."
                 )
 
 
@@ -743,6 +704,25 @@ STUDY MATERIAL:
 
                 raise ValueError(
                     "Correct answer missing."
+                )
+
+
+            # Sometimes AI returns "0" instead
+            # of 0. Convert it safely.
+
+            try:
+
+                question["answer"] = int(
+                    question["answer"]
+                )
+
+            except (
+                TypeError,
+                ValueError
+            ):
+
+                raise ValueError(
+                    "Answer must be 0, 1, 2 or 3."
                 )
 
 
@@ -763,38 +743,21 @@ STUDY MATERIAL:
                 question["explanation"] = ""
 
 
-        # Store quiz for this session
+        # Store quiz in session.
 
         session["quiz"] = questions
 
 
-        print(
-            "\n=============================="
-        )
-
-        print(
-            "QUIZ GENERATED"
-        )
-
-        print(
-            "=============================="
-        )
-
-        print(
-            f"User: {get_user_id()[:8]}"
-        )
-
+        print("\n==============================")
+        print("QUIZ GENERATED SUCCESSFULLY")
+        print("==============================")
         print(
             f"Questions: {len(questions)}"
         )
-
         print(
             f"Difficulty: {difficulty}"
         )
-
-        print(
-            "==============================\n"
-        )
+        print("==============================\n")
 
 
         return render_template(
@@ -805,32 +768,26 @@ STUDY MATERIAL:
 
     except Exception as e:
 
-        print(
-            "QUIZ PARSING ERROR:",
-            e
-        )
-
-        print(
-            "\nRAW AI RESPONSE:"
-        )
-
-        print(
-            quiz_text
-        )
+        print("\n==============================")
+        print("QUIZ PARSING ERROR")
+        print("==============================")
+        print(e)
+        print("==============================\n")
 
 
         return render_template(
             "index.html",
             error=(
-                "StudyMate generated an "
-                "invalid quiz. Please try again."
+                "StudyMate couldn't generate "
+                "a valid quiz this time. "
+                "Please try again."
             )
         )
 
 
-# ==========================================
+# =========================================================
 # SUBMIT QUIZ
-# ==========================================
+# =========================================================
 
 @app.route(
     "/submit_quiz",
@@ -881,9 +838,7 @@ def submit_quiz():
             selected_number = -1
 
 
-        correct = question[
-            "answer"
-        ]
+        correct = question["answer"]
 
 
         is_correct = (
@@ -947,25 +902,28 @@ def submit_quiz():
     )
 
 
-# ==========================================
+# =========================================================
 # FILE TOO LARGE
-# ==========================================
+# =========================================================
 
 @app.errorhandler(413)
 def file_too_large(error):
 
     return render_template(
+
         "index.html",
+
         error=(
             "That PDF is too large. "
             "Please upload a PDF smaller than 20 MB."
         )
+
     ), 413
 
 
-# ==========================================
-# RUN APPLICATION
-# ==========================================
+# =========================================================
+# RUN
+# =========================================================
 
 if __name__ == "__main__":
 
