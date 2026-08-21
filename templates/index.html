@@ -21,7 +21,9 @@
             color: #111;
         }
 
-        /* ---------- NAVBAR ---------- */
+        /* =========================
+           NAVBAR
+        ========================= */
 
         .navbar {
             height: 72px;
@@ -38,7 +40,6 @@
         .logo {
             font-size: 22px;
             font-weight: 700;
-            letter-spacing: -0.5px;
         }
 
         .logo span {
@@ -62,13 +63,15 @@
         }
 
 
-        /* ---------- MAIN ---------- */
+        /* =========================
+           MAIN
+        ========================= */
 
         .container {
             width: 90%;
             max-width: 1100px;
-            margin: 0 auto;
-            padding: 55px 0;
+            margin: auto;
+            padding: 50px 0;
         }
 
         .hero {
@@ -87,22 +90,26 @@
         }
 
 
-        /* ---------- ALERTS ---------- */
+        /* =========================
+           ALERTS
+        ========================= */
 
         .alert {
             padding: 14px 18px;
+            background: white;
             border: 1px solid #ccc;
-            background: #fff;
             border-radius: 10px;
             margin-bottom: 25px;
             font-size: 14px;
         }
 
 
-        /* ---------- UPLOAD CARD ---------- */
+        /* =========================
+           UPLOAD
+        ========================= */
 
         .upload-card {
-            background: #fff;
+            background: white;
             border: 1px solid #ddd;
             border-radius: 16px;
 
@@ -148,7 +155,7 @@
             display: inline-block;
 
             background: #111;
-            color: #fff;
+            color: white;
 
             padding: 12px 22px;
 
@@ -173,7 +180,7 @@
         .upload-btn {
             margin-top: 18px;
 
-            background: #fff;
+            background: white;
             color: #111;
 
             border: 1px solid #111;
@@ -189,33 +196,31 @@
 
         .upload-btn:hover {
             background: #111;
-            color: #fff;
+            color: white;
         }
 
 
-        /* ---------- ACTION CARDS ---------- */
+        /* =========================
+           ACTION CARDS
+        ========================= */
 
         .actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
+
             gap: 20px;
 
             margin-bottom: 30px;
         }
 
         .action-card {
-            background: #fff;
+            background: white;
+
             border: 1px solid #ddd;
+
             border-radius: 14px;
 
             padding: 28px;
-
-            transition: 0.2s;
-        }
-
-        .action-card:hover {
-            border-color: #111;
-            transform: translateY(-2px);
         }
 
         .action-icon {
@@ -235,7 +240,9 @@
         }
 
 
-        /* ---------- BUTTONS ---------- */
+        /* =========================
+           BUTTONS
+        ========================= */
 
         button {
             font-family: inherit;
@@ -245,9 +252,11 @@
             width: 100%;
 
             background: #111;
+
             color: white;
 
             border: none;
+
             border-radius: 8px;
 
             padding: 12px;
@@ -255,6 +264,7 @@
             cursor: pointer;
 
             font-size: 14px;
+
             font-weight: 600;
         }
 
@@ -263,11 +273,56 @@
         }
 
 
-        /* ---------- ASK AI ---------- */
+        /* =========================
+           SELECT CONTROLS
+        ========================= */
+
+        .quiz-control {
+            margin-bottom: 18px;
+        }
+
+        .quiz-control label {
+            display: block;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            margin-bottom: 8px;
+        }
+
+        .quiz-select {
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            background: white;
+
+            font-size: 14px;
+
+            outline: none;
+
+            cursor: pointer;
+        }
+
+        .quiz-select:focus {
+            border-color: #111;
+        }
+
+
+        /* =========================
+           ASK AI
+        ========================= */
 
         .chat-section {
-            background: #fff;
+            background: white;
+
             border: 1px solid #ddd;
+
             border-radius: 16px;
 
             padding: 30px;
@@ -281,16 +336,19 @@
 
         .section-title h2 {
             font-size: 22px;
+
             margin-bottom: 5px;
         }
 
         .section-title p {
             color: #777;
+
             font-size: 14px;
         }
 
         .chat-form {
             display: flex;
+
             gap: 10px;
         }
 
@@ -298,6 +356,7 @@
             flex: 1;
 
             border: 1px solid #ccc;
+
             border-radius: 8px;
 
             padding: 13px 15px;
@@ -313,14 +372,17 @@
 
         .ask-btn {
             background: #111;
-            color: #fff;
+
+            color: white;
 
             border: none;
+
             border-radius: 8px;
 
             padding: 0 25px;
 
             cursor: pointer;
+
             font-weight: 600;
         }
 
@@ -329,7 +391,9 @@
         }
 
 
-        /* ---------- ANSWER ---------- */
+        /* =========================
+           ANSWER
+        ========================= */
 
         .answer-box {
             margin-top: 20px;
@@ -345,15 +409,20 @@
             line-height: 1.6;
 
             font-size: 15px;
+
+            white-space: pre-wrap;
         }
 
 
-        /* ---------- QUIZ ---------- */
+        /* =========================
+           QUIZ
+        ========================= */
 
         .quiz-section {
-            background: #fff;
+            background: white;
 
             border: 1px solid #ddd;
+
             border-radius: 16px;
 
             padding: 30px;
@@ -361,27 +430,170 @@
             margin-bottom: 30px;
         }
 
-        .quiz-box {
+        .question-card {
             background: #f7f7f7;
 
-            border-radius: 10px;
+            border-radius: 12px;
 
             padding: 25px;
 
-            margin-top: 20px;
+            margin-bottom: 20px;
+        }
 
-            line-height: 1.7;
+        .question-number {
+            font-size: 13px;
+
+            color: #777;
+
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 18px;
+
+            font-weight: 600;
+
+            line-height: 1.5;
+
+            margin-bottom: 20px;
+        }
+
+        .option {
+            display: block;
+
+            background: white;
+
+            border: 1px solid #ddd;
+
+            border-radius: 8px;
+
+            padding: 13px;
+
+            margin-bottom: 10px;
+
+            cursor: pointer;
+
+            transition: 0.15s;
+        }
+
+        .option:hover {
+            border-color: #111;
+        }
+
+        .option input {
+            margin-right: 10px;
+        }
+
+        .submit-quiz {
+            width: 100%;
+
+            background: #111;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 8px;
+
+            padding: 14px;
+
+            cursor: pointer;
+
+            font-weight: 600;
 
             font-size: 15px;
         }
 
-        .quiz-box pre {
-            white-space: pre-wrap;
-            font-family: Arial, Helvetica, sans-serif;
+        .submit-quiz:hover {
+            background: #333;
         }
 
 
-        /* ---------- FOOTER ---------- */
+        /* =========================
+           SCORE
+        ========================= */
+
+        .score-box {
+            text-align: center;
+
+            background: #111;
+
+            color: white;
+
+            padding: 30px;
+
+            border-radius: 14px;
+
+            margin-bottom: 25px;
+        }
+
+        .score-label {
+            font-size: 15px;
+
+            opacity: 0.8;
+        }
+
+        .score-number {
+            font-size: 42px;
+
+            font-weight: 700;
+
+            margin: 10px 0;
+        }
+
+        .score-percentage {
+            font-size: 18px;
+        }
+
+
+        /* =========================
+           RESULTS
+        ========================= */
+
+        .result-card {
+            background: #f7f7f7;
+
+            border-radius: 12px;
+
+            padding: 20px;
+
+            margin-bottom: 15px;
+
+            border-left: 4px solid #777;
+        }
+
+        .result-card.correct {
+            border-left-color: #222;
+        }
+
+        .result-title {
+            font-weight: 600;
+
+            margin-bottom: 10px;
+        }
+
+        .result-answer {
+            margin-top: 8px;
+
+            line-height: 1.5;
+        }
+
+        .explanation {
+            margin-top: 12px;
+
+            padding-top: 12px;
+
+            border-top: 1px solid #ddd;
+
+            color: #555;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
 
         footer {
             text-align: center;
@@ -394,12 +606,15 @@
         }
 
 
-        /* ---------- MOBILE ---------- */
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 700px) {
 
             .container {
                 width: 92%;
+
                 padding: 35px 0;
             }
 
@@ -433,330 +648,608 @@
 <body>
 
 
-    <!-- NAVBAR -->
+<!-- =========================
+     NAVBAR
+========================= -->
 
-    <nav class="navbar">
+<nav class="navbar">
 
-        <div class="logo">
-            StudyMate <span>AI</span>
+    <div class="logo">
+        StudyMate <span>AI</span>
+    </div>
+
+    <div class="status">
+
+        <div class="status-dot"></div>
+
+        AI Study Assistant
+
+    </div>
+
+</nav>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main class="container">
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <h1>
+            Study smarter.
+        </h1>
+
+        <p>
+            Upload your notes, ask questions, and test yourself with AI.
+        </p>
+
+    </section>
+
+
+    <!-- ALERT -->
+
+    {% if error %}
+
+        <div class="alert">
+            ❌ {{ error }}
         </div>
 
-        <div class="status">
+    {% endif %}
 
-            <div class="status-dot"></div>
 
-            Local AI
+    {% if success %}
 
+        <div class="alert">
+            ✓ {{ success }}
         </div>
 
-    </nav>
+    {% endif %}
 
 
-    <!-- MAIN -->
+    <!-- =========================
+         UPLOAD
+    ========================= -->
 
-    <main class="container">
+    <section class="upload-card">
+
+        <div class="upload-icon">
+            ↑
+        </div>
+
+        <h2>
+            Upload your study material
+        </h2>
+
+        <p>
+            Upload your notes and StudyMate will become your personal AI tutor.
+        </p>
 
 
-        <!-- HERO -->
+        <form
+            action="/upload"
+            method="POST"
+            enctype="multipart/form-data"
+        >
 
-        <section class="hero">
+            <label class="choose-btn">
 
-            <h1>
-                Study smarter.
-            </h1>
+                Choose PDF
 
-            <p>
-                Upload your notes, ask questions, and test yourself with AI.
-            </p>
+                <input
+                    class="file-input"
+                    type="file"
+                    name="pdf"
+                    accept=".pdf"
+                    required
+                    onchange="showFileName(this)"
+                >
 
-        </section>
+            </label>
 
 
-        <!-- ERRORS -->
+            <div
+                id="file-name"
+                class="file-name"
+            ></div>
 
-        {% if error %}
 
-            <div class="alert">
-                ❌ {{ error }}
+            <button
+                class="upload-btn"
+                type="submit"
+            >
+                Upload Material
+            </button>
+
+        </form>
+
+
+        {% if filename %}
+
+            <div class="file-name">
+
+                ✓ Currently loaded:
+                <strong>{{ filename }}</strong>
+
             </div>
 
         {% endif %}
 
+    </section>
 
-        {% if success %}
 
-            <div class="alert">
-                ✓ {{ success }}
+    <!-- =========================
+         ACTION CARDS
+    ========================= -->
+
+    <section class="actions">
+
+
+        <!-- QUIZ -->
+
+        <div class="action-card">
+
+            <div class="action-icon">
+                ✦
             </div>
 
-        {% endif %}
-
-
-        <!-- UPLOAD -->
-
-        <section class="upload-card">
-
-            <div class="upload-icon">
-                ↑
-            </div>
-
-            <h2>
-                Upload your study material
-            </h2>
+            <h3>
+                Generate Quiz
+            </h3>
 
             <p>
-                Upload a PDF and StudyMate will turn it into your personal study assistant.
+                Create a custom quiz from your uploaded study material.
             </p>
 
 
             <form
-                action="/upload"
+                action="/quiz"
                 method="POST"
-                enctype="multipart/form-data"
             >
 
-                <label class="choose-btn">
 
-                    Choose PDF
+                <!-- NUMBER OF QUESTIONS -->
 
-                    <input
-                        class="file-input"
-                        type="file"
-                        name="pdf"
-                        accept=".pdf"
-                        required
-                        onchange="showFileName(this)"
+                <div class="quiz-control">
+
+                    <label for="num_questions">
+                        Number of questions
+                    </label>
+
+                    <select
+                        id="num_questions"
+                        name="num_questions"
+                        class="quiz-select"
                     >
 
-                </label>
+                        <option value="5">
+                            5 questions
+                        </option>
+
+                        <option value="10">
+                            10 questions
+                        </option>
+
+                        <option value="15">
+                            15 questions
+                        </option>
+
+                        <option value="20">
+                            20 questions
+                        </option>
+
+                    </select>
+
+                </div>
 
 
-                <div
-                    id="file-name"
-                    class="file-name"
-                ></div>
+                <!-- DIFFICULTY -->
+
+                <div class="quiz-control">
+
+                    <label for="difficulty">
+                        Difficulty
+                    </label>
+
+                    <select
+                        id="difficulty"
+                        name="difficulty"
+                        class="quiz-select"
+                    >
+
+                        <option value="easy">
+                            Easy
+                        </option>
+
+                        <option
+                            value="medium"
+                            selected
+                        >
+                            Medium
+                        </option>
+
+                        <option value="hard">
+                            Hard
+                        </option>
+
+                    </select>
+
+                </div>
 
 
                 <button
-                    class="upload-btn"
+                    class="primary-btn"
                     type="submit"
                 >
-                    Upload Material
+                    Generate Quiz →
                 </button>
 
             </form>
 
-
-            {% if filename %}
-
-                <div class="file-name">
-
-                    ✓ Currently loaded:
-                    <strong>{{ filename }}</strong>
-
-                </div>
-
-            {% endif %}
-
-        </section>
-
-
-        <!-- MAIN ACTIONS -->
-
-        <section class="actions">
-
-
-            <!-- QUIZ -->
-
-            <div class="action-card">
-
-                <div class="action-icon">
-                    ✦
-                </div>
-
-                <h3>
-                    Generate Quiz
-                </h3>
-
-                <p>
-                    Create 5 multiple-choice questions from your uploaded material.
-                </p>
-
-                <form action="/quiz" method="POST">
-
-                    <button
-                        class="primary-btn"
-                        type="submit"
-                    >
-                        Generate 5 MCQs →
-                    </button>
-
-                </form>
-
-            </div>
-
-
-            <!-- ASK AI -->
-
-            <div class="action-card">
-
-                <div class="action-icon">
-                    ?
-                </div>
-
-                <h3>
-                    Ask StudyMate
-                </h3>
-
-                <p>
-                    Have a question about your study material? Ask the AI.
-                </p>
-
-                <button
-                    class="primary-btn"
-                    onclick="document.getElementById('question').focus()"
-                >
-                    Ask a Question →
-                </button>
-
-            </div>
-
-
-        </section>
+        </div>
 
 
         <!-- ASK AI -->
 
-        <section class="chat-section">
+        <div class="action-card">
+
+            <div class="action-icon">
+                ?
+            </div>
+
+            <h3>
+                Ask StudyMate
+            </h3>
+
+            <p>
+                Ask questions about your uploaded study material.
+            </p>
+
+            <button
+                class="primary-btn"
+                onclick="document.getElementById('question').focus()"
+            >
+                Ask a Question →
+            </button>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =========================
+         ASK AI
+    ========================= -->
+
+    <section class="chat-section">
+
+        <div class="section-title">
+
+            <h2>
+                Ask StudyMate
+            </h2>
+
+            <p>
+                Ask anything about your uploaded study material.
+            </p>
+
+        </div>
+
+
+        <form
+            class="chat-form"
+            action="/ask"
+            method="POST"
+        >
+
+            <input
+                id="question"
+                class="chat-input"
+                type="text"
+                name="question"
+                placeholder="e.g. Explain photosynthesis"
+                required
+            >
+
+            <button
+                class="ask-btn"
+                type="submit"
+            >
+                Ask AI
+            </button>
+
+        </form>
+
+
+        {% if answer %}
+
+            <div class="answer-box">
+
+                <strong>StudyMate:</strong>
+
+                <br><br>
+
+                {{ answer }}
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =========================
+         INTERACTIVE QUIZ
+    ========================= -->
+
+    {% if quiz %}
+
+        <section class="quiz-section">
 
             <div class="section-title">
 
                 <h2>
-                    Ask StudyMate
+                    🧠 Your Quiz
                 </h2>
 
                 <p>
-                    Ask anything about your uploaded study material.
+                    Choose the best answer for every question.
                 </p>
 
             </div>
 
 
             <form
-                class="chat-form"
-                action="/ask"
+                action="/submit_quiz"
                 method="POST"
             >
 
-                <input
-                    id="question"
-                    class="chat-input"
-                    type="text"
-                    name="question"
-                    placeholder="e.g. What is a while loop?"
-                    required
-                >
+
+                {% for question in quiz %}
+
+                    <div class="question-card">
+
+
+                        <div class="question-number">
+
+                            Question {{ loop.index }}
+                            of {{ quiz|length }}
+
+                        </div>
+
+
+                        <div class="question-text">
+
+                            {{ question.question }}
+
+                        </div>
+
+
+                        {% for option in question.options %}
+
+                            <label class="option">
+
+                                <input
+                                    type="radio"
+                                    name="question_{{ loop.index0 }}"
+                                    value="{{ loop.index0 }}"
+                                    required
+                                >
+
+                                {{ option }}
+
+                            </label>
+
+                        {% endfor %}
+
+
+                    </div>
+
+                {% endfor %}
+
 
                 <button
-                    class="ask-btn"
+                    class="submit-quiz"
                     type="submit"
                 >
-                    Ask AI
+
+                    Submit Quiz →
+
                 </button>
+
 
             </form>
 
+        </section>
 
-            {% if answer %}
+    {% endif %}
 
-                <div class="answer-box">
 
-                    <strong>StudyMate:</strong>
+    <!-- =========================
+         RESULTS
+    ========================= -->
 
-                    <br><br>
+    {% if results %}
 
-                    {{ answer }}
+        <section class="quiz-section">
+
+
+            <!-- SCORE -->
+
+            <div class="score-box">
+
+                <div class="score-label">
+                    Your Score
+                </div>
+
+                <div class="score-number">
+
+                    {{ score }}/{{ total }}
 
                 </div>
 
-            {% endif %}
+                <div class="score-percentage">
+
+                    {{ percentage }}%
+
+                </div>
+
+            </div>
+
+
+            <!-- REVIEW -->
+
+            <div class="section-title">
+
+                <h2>
+                    Quiz Review
+                </h2>
+
+                <p>
+                    Review your answers and learn from your mistakes.
+                </p>
+
+            </div>
+
+
+            {% for result in results %}
+
+                <div
+                    class="result-card
+                    {% if result.is_correct %}
+                        correct
+                    {% endif %}"
+                >
+
+
+                    <div class="result-title">
+
+                        Question {{ loop.index }}
+
+                        {% if result.is_correct %}
+
+                            ✓ Correct
+
+                        {% else %}
+
+                            ✗ Incorrect
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div>
+
+                        {{ result.question }}
+
+                    </div>
+
+
+                    {% if result.selected >= 0 %}
+
+                        <div class="result-answer">
+
+                            <strong>
+                                Your answer:
+                            </strong>
+
+                            {{ result.options[result.selected] }}
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="result-answer">
+
+                            <strong>
+                                Your answer:
+                            </strong>
+
+                            Not answered
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <div class="result-answer">
+
+                        <strong>
+                            Correct answer:
+                        </strong>
+
+                        {{ result.options[result.correct] }}
+
+                    </div>
+
+
+                    <div class="explanation">
+
+                        <strong>
+                            Explanation:
+                        </strong>
+
+                        {{ result.explanation }}
+
+                    </div>
+
+
+                </div>
+
+            {% endfor %}
+
 
         </section>
 
-
-        <!-- QUIZ RESULT -->
-
-        {% if quiz %}
-
-            <section class="quiz-section">
-
-                <div class="section-title">
-
-                    <h2>
-                        Your Quiz
-                    </h2>
-
-                    <p>
-                        Test yourself using your uploaded material.
-                    </p>
-
-                </div>
+    {% endif %}
 
 
-                <div class="quiz-box">
-
-                    <pre>{{ quiz }}</pre>
-
-                </div>
-
-            </section>
-
-        {% endif %}
+</main>
 
 
-    </main>
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    StudyMate AI · Built for smarter studying
+
+    <br><br>
+
+    <span style="color: #555;">
+        Created by Sakshyam Niraula
+    </span>
+
+</footer>
 
 
-    <!-- FOOTER -->
+<script>
 
-    <footer>
+    function showFileName(input) {
 
-        StudyMate AI · Built for smarter studying
+        const fileName =
+            document.getElementById("file-name");
 
-    </footer>
+        if (input.files.length > 0) {
 
-
-    <script>
-
-        function showFileName(input) {
-
-            const fileName = document.getElementById("file-name");
-
-            if (input.files.length > 0) {
-
-                fileName.textContent =
-                    "Selected: " + input.files[0].name;
-
-            }
+            fileName.textContent =
+                "Selected: " +
+                input.files[0].name;
 
         }
 
-    </script>
+    }
+
+</script>
 
 
 </body>
 
 </html>
-<footer>
-
-```
-StudyMate AI · Built for smarter studying
-
-<br>
-
-<span style="color: #555;">
-    Created by Sakshyam Niraula
-</span>
-```
-
-</footer>
