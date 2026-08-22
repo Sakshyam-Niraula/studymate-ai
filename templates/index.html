@@ -1,16 +1,13 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="google-site-verification" content="fDE0o-QannkI78z7h5qan8vagJgBqa0WvlM8ShQgkr8" />
-
     <title>StudyMate AI</title>
 
     <style>
-
         * {
             box-sizing: border-box;
             margin: 0;
@@ -19,1054 +16,557 @@
 
         body {
             font-family: Arial, Helvetica, sans-serif;
-            background: #f5f5f5;
-            color: #111;
+            background: #f5f7fb;
+            color: #1f2937;
+            min-height: 100vh;
         }
 
-        /* =========================
-           NAVBAR
-        ========================= */
-
-        .navbar {
-            height: 72px;
-            background: #fff;
-            border-bottom: 1px solid #ddd;
+        header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 15px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 6%;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .logo {
-            font-size: 22px;
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .brand-name {
+            font-size: 24px;
             font-weight: 700;
+            color: #2563eb;
         }
 
-        .logo span {
-            font-weight: 400;
-        }
-
-        .status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .tagline {
             font-size: 13px;
-            color: #555;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #111;
-            border-radius: 50%;
-        }
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: auto;
-            padding: 50px 0;
+            color: #6b7280;
+            margin-top: 3px;
         }
 
         .hero {
-            margin-bottom: 35px;
+            text-align: center;
+            padding: 55px 20px 30px;
         }
 
         .hero h1 {
             font-size: 42px;
-            letter-spacing: -1.5px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            color: #111827;
+        }
+
+        .hero h1 span {
+            color: #2563eb;
         }
 
         .hero p {
-            color: #666;
+            color: #6b7280;
             font-size: 17px;
+            max-width: 650px;
+            margin: auto;
+            line-height: 1.6;
         }
 
-        /* =========================
-           ALERTS
-        ========================= */
-
-        .alert {
-            padding: 14px 18px;
-            background: white;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            font-size: 14px;
+        .container {
+            width: 92%;
+            max-width: 900px;
+            margin: 30px auto 60px;
         }
 
-        /* =========================
-           UPLOAD
-        ========================= */
-
-        .upload-card {
+        .card {
             background: white;
-            border: 1px solid #ddd;
-            border-radius: 16px;
-            padding: 45px;
-            text-align: center;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
             margin-bottom: 25px;
         }
 
-        .upload-icon {
-            width: 58px;
-            height: 58px;
-            border: 1px solid #222;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 25px;
-        }
-
-        .upload-card h2 {
-            font-size: 23px;
+        .card h2 {
             margin-bottom: 8px;
+            color: #111827;
         }
 
-        .upload-card p {
-            color: #777;
-            font-size: 14px;
-            margin-bottom: 25px;
+        .card-description {
+            color: #6b7280;
+            margin-bottom: 22px;
         }
 
-        .file-input {
+        .upload-area {
+            border: 2px dashed #93c5fd;
+            border-radius: 14px;
+            padding: 35px 20px;
+            text-align: center;
+            background: #eff6ff;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .upload-area:hover {
+            background: #dbeafe;
+        }
+
+        .upload-area input {
             display: none;
         }
 
-        .choose-btn {
-            display: inline-block;
-            background: #111;
-            color: white;
-            padding: 12px 22px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
+        .upload-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
         }
 
-        .choose-btn:hover {
-            background: #333;
+        .upload-text {
+            font-weight: 600;
+            color: #1d4ed8;
         }
 
         .file-name {
-            margin-top: 15px;
-            font-size: 13px;
-            color: #555;
-        }
-
-        .upload-btn {
-            margin-top: 18px;
-            background: white;
-            color: #111;
-            border: 1px solid #111;
-            padding: 11px 22px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .upload-btn:hover {
-            background: #111;
-            color: white;
-        }
-
-        /* =========================
-           ACTION CARDS
-        ========================= */
-
-        .actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .action-card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 14px;
-            padding: 28px;
-        }
-
-        .action-icon {
-            font-size: 25px;
-            margin-bottom: 15px;
-        }
-
-        .action-card h3 {
-            font-size: 19px;
-            margin-bottom: 8px;
-        }
-
-        .action-card p {
-            color: #777;
+            margin-top: 12px;
+            color: #374151;
             font-size: 14px;
-            margin-bottom: 20px;
         }
-
-        /* =========================
-           BUTTONS
-        ========================= */
 
         button {
-            font-family: inherit;
-        }
-
-        .primary-btn {
             width: 100%;
-            background: #111;
-            color: white;
             border: none;
-            border-radius: 8px;
-            padding: 12px;
-            cursor: pointer;
-            font-size: 14px;
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-top: 18px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
             font-weight: 600;
-        }
-
-        .primary-btn:hover {
-            background: #333;
-        }
-
-        /* =========================
-           SELECT CONTROLS
-        ========================= */
-
-        .quiz-control {
-            margin-bottom: 18px;
-        }
-
-        .quiz-control label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .quiz-select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background: white;
-            font-size: 14px;
-            outline: none;
             cursor: pointer;
+            transition: 0.2s;
         }
 
-        .quiz-select:focus {
-            border-color: #111;
+        button:hover {
+            background: #1d4ed8;
         }
 
-        /* =========================
-           ASK AI
-        ========================= */
-
-        .chat-section {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
         }
 
-        .section-title {
-            margin-bottom: 20px;
-        }
-
-        .section-title h2 {
-            font-size: 22px;
-            margin-bottom: 5px;
-        }
-
-        .section-title p {
-            color: #777;
-            font-size: 14px;
-        }
-
-        .chat-form {
+        .ask-box {
             display: flex;
             gap: 10px;
         }
 
-        .chat-input {
+        .ask-box input {
             flex: 1;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 13px 15px;
-            font-size: 14px;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            font-size: 15px;
             outline: none;
         }
 
-        .chat-input:focus {
-            border-color: #111;
+        .ask-box input:focus {
+            border-color: #2563eb;
         }
 
-        .ask-btn {
-            background: #111;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0 25px;
-            cursor: pointer;
-            font-weight: 600;
+        .ask-box button {
+            width: 130px;
+            margin-top: 0;
         }
 
-        .ask-btn:hover {
-            background: #333;
-        }
-
-        /* =========================
-           ANSWER
-        ========================= */
-
-        .answer-box {
+        .result {
             margin-top: 20px;
-            padding: 20px;
-            background: #f7f7f7;
-            border-radius: 10px;
-            border-left: 3px solid #111;
-            line-height: 1.6;
-            font-size: 15px;
+            padding: 18px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
             white-space: pre-wrap;
+            line-height: 1.6;
+            display: none;
         }
 
-        /* =========================
-           QUIZ
-        ========================= */
-
-        .quiz-section {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-
-        .question-card {
-            background: #f7f7f7;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
-        }
-
-        .question-number {
-            font-size: 13px;
-            color: #777;
-            margin-bottom: 8px;
-        }
-
-        .question-text {
-            font-size: 18px;
-            font-weight: 600;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
-        .option {
-            display: block;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 13px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-
-        .option:hover {
-            border-color: #111;
-        }
-
-        .option input {
-            margin-right: 10px;
-        }
-
-        .submit-quiz {
-            width: 100%;
-            background: #111;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 14px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .submit-quiz:hover {
-            background: #333;
-        }
-
-        /* =========================
-           SCORE
-        ========================= */
-
-        .score-box {
+        .loading {
             text-align: center;
-            background: #111;
-            color: white;
-            padding: 30px;
-            border-radius: 14px;
-            margin-bottom: 25px;
+            color: #2563eb;
+            margin-top: 15px;
+            display: none;
         }
 
-        .score-label {
-            font-size: 15px;
-            opacity: 0.8;
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
         }
 
-        .score-number {
-            font-size: 42px;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-
-        .score-percentage {
-            font-size: 18px;
-        }
-
-        /* =========================
-           RESULTS
-        ========================= */
-
-        .result-card {
-            background: #f7f7f7;
-            border-radius: 12px;
+        .feature {
             padding: 20px;
-            margin-bottom: 15px;
-            border-left: 4px solid #777;
+            background: #f9fafb;
+            border-radius: 14px;
+            text-align: center;
         }
 
-        .result-card.correct {
-            border-left-color: #222;
-        }
-
-        .result-title {
-            font-weight: 600;
+        .feature-icon {
+            font-size: 30px;
             margin-bottom: 10px;
         }
 
-        .result-answer {
-            margin-top: 8px;
-            line-height: 1.5;
+        .feature h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
         }
 
-        .explanation {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #ddd;
-            color: #555;
-            line-height: 1.5;
+        .feature p {
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.4;
         }
-
-        /* =========================
-           FOOTER
-        ========================= */
 
         footer {
             text-align: center;
-            color: #888;
-            font-size: 13px;
-            padding: 30px 0;
+            padding: 25px;
+            color: #6b7280;
+            font-size: 14px;
         }
 
-        /* =========================
-           MOBILE
-        ========================= */
-
         @media (max-width: 700px) {
-
-            .container {
-                width: 92%;
-                padding: 35px 0;
-            }
-
             .hero h1 {
                 font-size: 32px;
             }
 
-            .actions {
+            .features {
                 grid-template-columns: 1fr;
             }
 
-            .upload-card {
-                padding: 30px 20px;
-            }
-
-            .chat-form {
+            .ask-box {
                 flex-direction: column;
             }
 
-            .ask-btn {
-                padding: 12px;
+            .ask-box button {
+                width: 100%;
             }
 
+            header {
+                padding: 12px 18px;
+            }
+
+            .brand-name {
+                font-size: 20px;
+            }
         }
-
     </style>
-
 </head>
 
 <body>
 
-<!-- =========================
-     NAVBAR
-========================= -->
+<header>
+    <div class="brand">
 
-<nav class="navbar">
-
-    <div class="logo">
-        StudyMate <span>AI</span>
-    </div>
-
-    <div class="status">
-
-        <div class="status-dot"></div>
-
-        AI Study Assistant
-
-    </div>
-
-</nav>
-
-<!-- =========================
-     MAIN
-========================= -->
-
-<main class="container">
-
-    <!-- HERO -->
-
-    <section class="hero">
-
-        <h1>
-            Study smarter.
-        </h1>
-
-        <p>
-            Upload your notes, ask questions, and test yourself with AI.
-        </p>
-
-    </section>
-
-    <!-- ALERT -->
-
-    {% if error %}
-
-        <div class="alert">
-            ❌ {{ error }}
-        </div>
-
-    {% endif %}
-
-    {% if success %}
-
-        <div class="alert">
-            ✓ {{ success }}
-        </div>
-
-    {% endif %}
-
-    <!-- =========================
-         UPLOAD
-    ========================= -->
-
-    <section class="upload-card">
-
-        <div class="upload-icon">
-            ↑
-        </div>
-
-        <h2>
-            Upload your study material
-        </h2>
-
-        <p>
-            Upload your notes and StudyMate will become your personal AI tutor.
-        </p>
-
-        <form
-            action="/upload"
-            method="POST"
-            enctype="multipart/form-data"
+        <!-- STUDYMATE AI LOGO -->
+        <img
+            src="/static/Gemini_Generated_Image_fiyjhsfiyjhsfiyj.jfif"
+            alt="StudyMate AI Logo"
+            class="logo"
         >
 
-            <label class="choose-btn">
-
-                Choose PDF
-
-                <input
-                    class="file-input"
-                    type="file"
-                    name="pdf"
-                    accept=".pdf"
-                    required
-                    onchange="showFileName(this)"
-                >
-
-            </label>
-
-            <div
-                id="file-name"
-                class="file-name"
-            ></div>
-
-            <button
-                class="upload-btn"
-                type="submit"
-            >
-                Upload Material
-            </button>
-
-        </form>
-
-        {% if filename %}
-
-            <div class="file-name">
-
-                ✓ Currently loaded:
-                <strong>{{ filename }}</strong>
-
-            </div>
-
-        {% endif %}
-
-    </section>
-
-    <!-- =========================
-         ACTION CARDS
-    ========================= -->
-
-    <section class="actions">
-
-        <!-- QUIZ -->
-
-        <div class="action-card">
-
-            <div class="action-icon">
-                ✦
-            </div>
-
-            <h3>
-                Generate Quiz
-            </h3>
-
-            <p>
-                Create a custom quiz from your uploaded study material.
-            </p>
-
-            <form
-                action="/quiz"
-                method="POST"
-            >
-
-                <div class="quiz-control">
-
-                    <label for="num_questions">
-                        Number of questions
-                    </label>
-
-                    <select
-                        id="num_questions"
-                        name="num_questions"
-                        class="quiz-select"
-                    >
-
-                        <option value="5">
-                            5 questions
-                        </option>
-
-                        <option value="10">
-                            10 questions
-                        </option>
-
-                        <option value="15">
-                            15 questions
-                        </option>
-
-                        <option value="20">
-                            20 questions
-                        </option>
-
-                    </select>
-
-                </div>
-
-                <div class="quiz-control">
-
-                    <label for="difficulty">
-                        Difficulty
-                    </label>
-
-                    <select
-                        id="difficulty"
-                        name="difficulty"
-                        class="quiz-select"
-                    >
-
-                        <option value="easy">
-                            Easy
-                        </option>
-
-                        <option
-                            value="medium"
-                            selected
-                        >
-                            Medium
-                        </option>
-
-                        <option value="hard">
-                            Hard
-                        </option>
-
-                    </select>
-
-                </div>
-
-                <button
-                    class="primary-btn"
-                    type="submit"
-                >
-                    Generate Quiz →
-                </button>
-
-            </form>
-
+        <div>
+            <div class="brand-name">StudyMate AI</div>
+            <div class="tagline">Your AI-powered study companion</div>
         </div>
+    </div>
+</header>
 
-        <!-- ASK AI -->
 
-        <div class="action-card">
+<section class="hero">
+    <h1>Study Smarter with <span>StudyMate AI</span></h1>
 
-            <div class="action-icon">
-                ?
-            </div>
+    <p>
+        Upload your study material, ask questions, and use AI to
+        understand your subjects faster and more effectively.
+    </p>
+</section>
 
-            <h3>
-                Ask StudyMate
-            </h3>
 
-            <p>
-                Ask questions about your uploaded study material.
-            </p>
+<div class="container">
 
-            <button
-                class="primary-btn"
-                onclick="document.getElementById('question').focus()"
-            >
-                Ask a Question →
-            </button>
+    <!-- PDF UPLOAD -->
+    <div class="card">
 
-        </div>
+        <h2>📚 Upload Your Study Material</h2>
 
-    </section>
+        <p class="card-description">
+            Upload a PDF or supported document and let StudyMate AI help you learn from it.
+        </p>
 
-    <!-- =========================
-         ASK AI
-    ========================= -->
-
-    <section class="chat-section">
-
-        <div class="section-title">
-
-            <h2>
-                Ask StudyMate
-            </h2>
-
-            <p>
-                Ask anything about your uploaded study material.
-            </p>
-
-        </div>
-
-        <form
-            class="chat-form"
-            action="/ask"
-            method="POST"
-        >
+        <label class="upload-area">
 
             <input
-                id="question"
-                class="chat-input"
-                type="text"
-                name="question"
-                placeholder="e.g. Explain photosynthesis"
-                required
+                type="file"
+                id="fileInput"
+                accept=".pdf,.doc,.docx,.txt"
+                onchange="showFileName()"
             >
 
-            <button
-                class="ask-btn"
-                type="submit"
+            <div class="upload-icon">📄</div>
+
+            <div class="upload-text">
+                Click here to choose a file
+            </div>
+
+            <div class="file-name" id="fileName">
+                No file selected
+            </div>
+
+        </label>
+
+        <button onclick="uploadFile()">
+            Upload & Analyze
+        </button>
+
+        <div class="loading" id="uploadLoading">
+            ⏳ Processing your document...
+        </div>
+
+        <div class="result" id="uploadResult"></div>
+
+    </div>
+
+
+    <!-- ASK AI -->
+    <div class="card">
+
+        <h2>🤖 Ask StudyMate AI</h2>
+
+        <p class="card-description">
+            Ask questions about your study material or any topic you're learning.
+        </p>
+
+        <div class="ask-box">
+
+            <input
+                type="text"
+                id="questionInput"
+                placeholder="Ask something..."
+                onkeydown="handleEnter(event)"
             >
+
+            <button onclick="askQuestion()">
                 Ask AI
             </button>
 
-        </form>
+        </div>
 
-        {% if answer %}
+        <div class="loading" id="askLoading">
+            🤔 StudyMate AI is thinking...
+        </div>
 
-            <div class="answer-box">
+        <div class="result" id="askResult"></div>
 
-                <strong>StudyMate:</strong>
+    </div>
 
-                <br><br>
 
-                {{ answer }}
+    <!-- FEATURES -->
+    <div class="card">
 
-            </div>
+        <h2>✨ What StudyMate AI Can Do</h2>
 
-        {% endif %}
+        <div class="features">
 
-    </section>
-
-    <!-- =========================
-         INTERACTIVE QUIZ
-    ========================= -->
-
-    {% if quiz %}
-
-        <section class="quiz-section">
-
-            <div class="section-title">
-
-                <h2>
-                    🧠 Your Quiz
-                </h2>
-
+            <div class="feature">
+                <div class="feature-icon">📄</div>
+                <h3>Document Analysis</h3>
                 <p>
-                    Choose the best answer for every question.
+                    Upload your study materials and get AI-powered help.
                 </p>
-
             </div>
 
-            <form
-                action="/submit_quiz"
-                method="POST"
-            >
-
-                {% for question in quiz %}
-
-                    <div class="question-card">
-
-                        <div class="question-number">
-
-                            Question {{ loop.index }}
-                            of {{ quiz|length }}
-
-                        </div>
-
-                        <div class="question-text">
-
-                            {{ question.question }}
-
-                        </div>
-
-                        {% for option in question.options %}
-
-                            <label class="option">
-
-                                <input
-                                    type="radio"
-                                    name="question_{{ loop.index0 }}"
-                                    value="{{ loop.index0 }}"
-                                    required
-                                >
-
-                                {{ option }}
-
-                            </label>
-
-                        {% endfor %}
-
-                    </div>
-
-                {% endfor %}
-
-                <button
-                    class="submit-quiz"
-                    type="submit"
-                >
-
-                    Submit Quiz →
-
-                </button>
-
-            </form>
-
-        </section>
-
-    {% endif %}
-
-    <!-- =========================
-         RESULTS
-    ========================= -->
-
-    {% if results %}
-
-        <section class="quiz-section">
-
-            <div class="score-box">
-
-                <div class="score-label">
-                    Your Score
-                </div>
-
-                <div class="score-number">
-
-                    {{ score }}/{{ total }}
-
-                </div>
-
-                <div class="score-percentage">
-
-                    {{ percentage }}%
-
-                </div>
-
-            </div>
-
-            <div class="section-title">
-
-                <h2>
-                    Quiz Review
-                </h2>
-
+            <div class="feature">
+                <div class="feature-icon">🤖</div>
+                <h3>AI Questions</h3>
                 <p>
-                    Review your answers and learn from your mistakes.
+                    Ask questions and receive useful explanations.
                 </p>
-
             </div>
 
-            {% for result in results %}
+            <div class="feature">
+                <div class="feature-icon">🧠</div>
+                <h3>Learn Smarter</h3>
+                <p>
+                    Understand difficult concepts more efficiently.
+                </p>
+            </div>
 
-                <div
-                    class="result-card
-                    {% if result.is_correct %}
-                        correct
-                    {% endif %}"
-                >
+        </div>
 
-                    <div class="result-title">
+    </div>
 
-                        Question {{ loop.index }}
+</div>
 
-                        {% if result.is_correct %}
-
-                            ✓ Correct
-
-                        {% else %}
-
-                            ✗ Incorrect
-
-                        {% endif %}
-
-                    </div>
-
-                    <div>
-
-                        {{ result.question }}
-
-                    </div>
-
-                    {% if result.selected >= 0 %}
-
-                        <div class="result-answer">
-
-                            <strong>
-                                Your answer:
-                            </strong>
-
-                            {{ result.options[result.selected] }}
-
-                        </div>
-
-                    {% else %}
-
-                        <div class="result-answer">
-
-                            <strong>
-                                Your answer:
-                            </strong>
-
-                            Not answered
-
-                        </div>
-
-                    {% endif %}
-
-                    <div class="result-answer">
-
-                        <strong>
-                            Correct answer:
-                        </strong>
-
-                        {{ result.options[result.correct] }}
-
-                    </div>
-
-                    <div class="explanation">
-
-                        <strong>
-                            Explanation:
-                        </strong>
-
-                        {{ result.explanation }}
-
-                    </div>
-
-                </div>
-
-            {% endfor %}
-
-        </section>
-
-    {% endif %}
-
-</main>
-
-<!-- =========================
-     FOOTER
-========================= -->
 
 <footer>
-
-    StudyMate AI · Built for smarter studying
-
-    <br><br>
-
-    <span style="color: #555;">
-        Created by Sakshyam Niraula
-    </span>
-
+    © 2026 StudyMate AI · Created by Sakshyam Niraula
 </footer>
+
 
 <script>
 
-    function showFileName(input) {
+function showFileName() {
 
-        const fileName =
-            document.getElementById("file-name");
+    const fileInput = document.getElementById("fileInput");
+    const fileName = document.getElementById("fileName");
 
-        if (input.files.length > 0) {
+    if (fileInput.files.length > 0) {
+        fileName.textContent = fileInput.files[0].name;
+    } else {
+        fileName.textContent = "No file selected";
+    }
+}
 
-            fileName.textContent =
-                "Selected: " +
-                input.files[0].name;
+
+async function uploadFile() {
+
+    const fileInput = document.getElementById("fileInput");
+    const result = document.getElementById("uploadResult");
+    const loading = document.getElementById("uploadLoading");
+
+    if (fileInput.files.length === 0) {
+        alert("Please select a file first.");
+        return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("file", fileInput.files[0]);
+
+    loading.style.display = "block";
+    result.style.display = "none";
+
+    try {
+
+        const response = await fetch("/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        loading.style.display = "none";
+        result.style.display = "block";
+
+        if (data.error) {
+            result.textContent = "Error: " + data.error;
+        } else {
+            result.textContent =
+                data.message ||
+                data.result ||
+                JSON.stringify(data, null, 2);
+        }
+
+    } catch (error) {
+
+        loading.style.display = "none";
+        result.style.display = "block";
+
+        result.textContent =
+            "Something went wrong while uploading the file.\n\n" +
+            error;
+
+    }
+}
+
+
+async function askQuestion() {
+
+    const questionInput =
+        document.getElementById("questionInput");
+
+    const result =
+        document.getElementById("askResult");
+
+    const loading =
+        document.getElementById("askLoading");
+
+    const question =
+        questionInput.value.trim();
+
+    if (!question) {
+        alert("Please enter a question.");
+        return;
+    }
+
+    loading.style.display = "block";
+    result.style.display = "none";
+
+    try {
+
+        const response = await fetch("/ask", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                question: question
+            })
+
+        });
+
+        const data = await response.json();
+
+        loading.style.display = "none";
+        result.style.display = "block";
+
+        if (data.error) {
+
+            result.textContent =
+                "Error: " + data.error;
+
+        } else {
+
+            result.textContent =
+                data.answer ||
+                data.response ||
+                data.result ||
+                JSON.stringify(data, null, 2);
 
         }
 
+    } catch (error) {
+
+        loading.style.display = "none";
+        result.style.display = "block";
+
+        result.textContent =
+            "Something went wrong.\n\n" +
+            error;
+
     }
+}
+
+
+function handleEnter(event) {
+
+    if (event.key === "Enter") {
+        askQuestion();
+    }
+
+}
 
 </script>
 
 </body>
-
 </html>
+```
