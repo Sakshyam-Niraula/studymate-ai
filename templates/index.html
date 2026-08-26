@@ -16,12 +16,10 @@
         content="StudyMate AI is a personal AI study assistant that helps students learn from their notes, ask questions, and generate quizzes from study material."
     >
 
-    <meta
-        name="keywords"
-        content="StudyMate AI, AI study assistant, AI tutor, AI quiz generator, study notes AI, AI study tool, PDF quiz generator"
-    >
-
     <meta name="author" content="Sakshyam Niraula">
+
+    <!-- Tell search engines they may index and follow this page -->
+    <meta name="robots" content="index, follow">
 
     <!-- Canonical URL -->
     <link
@@ -51,14 +49,6 @@
         property="og:image"
         content="{{ url_for('static', filename='Gemini_Generated_Image_fiyjhsfiyjhsfiyj.jfif', _external=True) }}"
     >
-
-    <!-- Robots -->
-    <meta
-        name="robots"
-        content="index, follow"
-    >
-
-    <title>StudyMate AI</title>
 
     <style>
 
@@ -592,10 +582,8 @@
     <div class="logo">
 
         <img
-          
-    src="{{ url_for('static', filename='Gemini_Generated_Image_fiyjhsfiyj.jfif') }}"
-    alt="StudyMate AI logo"
->
+            src="{{ url_for('static', filename='Gemini_Generated_Image_fiyjhsfiyjhsfiyj.jfif') }}"
+            alt="StudyMate AI logo"
         >
 
     </div>
@@ -747,8 +735,6 @@
                 method="POST"
             >
 
-                <!-- NUMBER OF QUESTIONS -->
-
                 <div class="quiz-control">
 
                     <label for="num_questions">
@@ -781,8 +767,6 @@
 
                 </div>
 
-
-                <!-- DIFFICULTY -->
 
                 <div class="quiz-control">
 
@@ -1007,8 +991,6 @@
 
         <section class="quiz-section">
 
-            <!-- SCORE -->
-
             <div class="score-box">
 
                 <div class="score-label">
@@ -1029,8 +1011,6 @@
 
             </div>
 
-
-            <!-- REVIEW -->
 
             <div class="section-title">
 
