@@ -1,4 +1,3 @@
-````python
 from flask import Flask, render_template, request, session
 from google import genai
 from dotenv import load_dotenv
@@ -62,8 +61,6 @@ client = (
     else None
 )
 
-# IMPORTANT:
-# Gemini 2.5 Flash is no longer available to new users.
 MODEL_NAME = "models/gemini-3.6-flash"
 
 
@@ -151,7 +148,8 @@ def robots_txt():
 
     return (
         "User-agent: *\n"
-        "Allow: /\n"
+        "Allow: /\n\n"
+        "Sitemap: https://studymate-ai-dydg.onrender.com/sitemap.xml\n"
     ), 200, {
         "Content-Type": "text/plain"
     }
@@ -193,14 +191,12 @@ def upload():
             error="Please choose a PDF."
         )
 
-
     if not allowed_file(pdf.filename):
 
         return render_template(
             "index.html",
             error="Only PDF files are allowed."
         )
-
 
     safe_filename = secure_filename(
         pdf.filename
@@ -213,7 +209,6 @@ def upload():
             error="Invalid filename."
         )
 
-
     user_folder = get_user_folder()
 
     filepath = os.path.join(
@@ -223,13 +218,11 @@ def upload():
 
     pdf.save(filepath)
 
-
     try:
 
         document = fitz.open(filepath)
 
         text = ""
-
 
         for page_number, page in enumerate(
             document,
@@ -246,9 +239,7 @@ def upload():
 
             text += page_text + "\n"
 
-
         document.close()
-
 
         if not text.strip():
 
@@ -264,9 +255,7 @@ def upload():
                 )
             )
 
-
         material_path = get_material_path()
-
 
         with open(
             material_path,
@@ -275,7 +264,6 @@ def upload():
         ) as file:
 
             file.write(text)
-
 
         print("\n==============================")
         print("PDF UPLOAD SUCCESS")
@@ -291,17 +279,13 @@ def upload():
         )
         print("==============================\n")
 
-
         return render_template(
             "index.html",
-
             filename=safe_filename,
-
             success=(
                 "Study material uploaded successfully!"
             )
         )
-
 
     except Exception as e:
 
@@ -315,7 +299,6 @@ def upload():
 
         return render_template(
             "index.html",
-
             error=(
                 f"Could not read PDF: {str(e)}"
             )
@@ -330,13 +313,11 @@ def get_study_material():
 
     material_path = get_material_path()
 
-
     if not os.path.exists(
         material_path
     ):
 
         return None
-
 
     with open(
         material_path,
@@ -359,7 +340,6 @@ def ask_gemini(prompt):
             "Gemini API key is not configured."
         )
 
-
     try:
 
         response = client.models.generate_content(
@@ -370,16 +350,13 @@ def ask_gemini(prompt):
 
         )
 
-
         if not response.text:
 
             return (
                 "Gemini returned an empty response."
             )
 
-
         return response.text
-
 
     except Exception as e:
 
@@ -408,7 +385,6 @@ def ask():
         ""
     ).strip()
 
-
     if not question:
 
         return render_template(
@@ -416,9 +392,7 @@ def ask():
             error="Please enter a question."
         )
 
-
     study_material = get_study_material()
-
 
     if study_material is None:
 
@@ -426,7 +400,6 @@ def ask():
             "index.html",
             answer="Please upload a PDF first."
         )
-
 
     prompt = f"""
 You are StudyMate, an AI tutor.
@@ -471,9 +444,7 @@ STUDENT QUESTION:
 {question}
 """
 
-
     answer = ask_gemini(prompt)
-
 
     return render_template(
         "index.html",
@@ -501,7 +472,6 @@ def quiz():
         "medium"
     )
 
-
     allowed_numbers = {
         "5",
         "10",
@@ -509,11 +479,9 @@ def quiz():
         "20"
     }
 
-
     if num_questions not in allowed_numbers:
 
         num_questions = "5"
-
 
     allowed_difficulties = {
         "easy",
@@ -521,14 +489,11 @@ def quiz():
         "hard"
     }
 
-
     if difficulty not in allowed_difficulties:
 
         difficulty = "medium"
 
-
     study_material = get_study_material()
-
 
     if study_material is None:
 
@@ -536,7 +501,6 @@ def quiz():
             "index.html",
             error="Please upload a PDF first."
         )
-
 
     print("\n==============================")
     print("GENERATING QUIZ")
@@ -551,7 +515,6 @@ def quiz():
         f"Study material: {len(study_material)} characters"
     )
     print("==============================\n")
-
 
     prompt = f"""
 You are StudyMate, an educational quiz generator.
@@ -604,9 +567,7 @@ STUDY MATERIAL:
 ==============================
 """
 
-
     quiz_text = ask_gemini(prompt)
-
 
     print("\n==============================")
     print("RAW QUIZ RESPONSE")
@@ -614,14 +575,9 @@ STUDY MATERIAL:
     print(quiz_text)
     print("==============================\n")
 
-
     try:
 
         quiz_text = quiz_text.strip()
-
-
-        # Remove Markdown code fences if Gemini
-        # accidentally adds them.
 
         if quiz_text.startswith("```"):
 
@@ -640,14 +596,9 @@ STUDY MATERIAL:
                 cleaned_lines
             ).strip()
 
-
-        # Find JSON array if Gemini adds
-        # accidental text around it.
-
         start = quiz_text.find("[")
 
         end = quiz_text.rfind("]")
-
 
         if start == -1 or end == -1:
 
@@ -655,16 +606,13 @@ STUDY MATERIAL:
                 "No JSON array found."
             )
 
-
         quiz_text = quiz_text[
             start:end + 1
         ]
 
-
         questions = json.loads(
             quiz_text
         )
-
 
         if not isinstance(
             questions,
@@ -675,7 +623,6 @@ STUDY MATERIAL:
                 "Quiz response is not a list."
             )
 
-
         if len(questions) != int(
             num_questions
         ):
@@ -685,7 +632,6 @@ STUDY MATERIAL:
                 f"questions but received "
                 f"{len(questions)}."
             )
-
 
         for question in questions:
 
@@ -698,20 +644,17 @@ STUDY MATERIAL:
                     "Invalid question object."
                 )
 
-
             if "question" not in question:
 
                 raise ValueError(
                     "Question text missing."
                 )
 
-
             if "options" not in question:
 
                 raise ValueError(
                     "Question options missing."
                 )
-
 
             if not isinstance(
                 question["options"],
@@ -722,7 +665,6 @@ STUDY MATERIAL:
                     "Options must be a list."
                 )
 
-
             if len(
                 question["options"]
             ) != 4:
@@ -732,16 +674,11 @@ STUDY MATERIAL:
                     "exactly 4 options."
                 )
 
-
             if "answer" not in question:
 
                 raise ValueError(
                     "Correct answer missing."
                 )
-
-
-            # Sometimes AI returns "0" instead
-            # of 0. Convert it safely.
 
             try:
 
@@ -758,7 +695,6 @@ STUDY MATERIAL:
                     "Answer must be 0, 1, 2 or 3."
                 )
 
-
             if question["answer"] not in {
                 0,
                 1,
@@ -770,16 +706,11 @@ STUDY MATERIAL:
                     "Invalid answer index."
                 )
 
-
             if "explanation" not in question:
 
                 question["explanation"] = ""
 
-
-        # Store quiz in session.
-
         session["quiz"] = questions
-
 
         print("\n==============================")
         print("QUIZ GENERATED SUCCESSFULLY")
@@ -792,12 +723,10 @@ STUDY MATERIAL:
         )
         print("==============================\n")
 
-
         return render_template(
             "index.html",
             quiz=questions
         )
-
 
     except Exception as e:
 
@@ -806,7 +735,6 @@ STUDY MATERIAL:
         print("==============================")
         print(e)
         print("==============================\n")
-
 
         return render_template(
             "index.html",
@@ -832,7 +760,6 @@ def submit_quiz():
         "quiz"
     )
 
-
     if not questions:
 
         return render_template(
@@ -842,11 +769,9 @@ def submit_quiz():
             )
         )
 
-
     score = 0
 
     results = []
-
 
     for index, question in enumerate(
         questions
@@ -855,7 +780,6 @@ def submit_quiz():
         selected = request.form.get(
             f"question_{index}"
         )
-
 
         try:
 
@@ -870,19 +794,15 @@ def submit_quiz():
 
             selected_number = -1
 
-
         correct = question["answer"]
-
 
         is_correct = (
             selected_number == correct
         )
 
-
         if is_correct:
 
             score += 1
-
 
         results.append({
 
@@ -909,16 +829,13 @@ def submit_quiz():
 
         })
 
-
     total = len(
         questions
     )
 
-
     percentage = int(
         (score / total) * 100
     )
-
 
     return render_template(
 
@@ -933,15 +850,6 @@ def submit_quiz():
         percentage=percentage
 
     )
-
-
-# =========================================================
-# SITEMAP.XML
-# =========================================================
-
-# Sitemap route added above the error handler.
-# This makes the homepage discoverable through
-# https://studymate-ai-dydg.onrender.com/sitemap.xml
 
 
 # =========================================================
@@ -972,4 +880,3 @@ if __name__ == "__main__":
     app.run(
         debug=True
     )
-````
