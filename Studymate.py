@@ -1,3 +1,4 @@
+````python
 from flask import Flask, render_template, request, session
 from google import genai
 from dotenv import load_dotenv
@@ -153,6 +154,23 @@ def robots_txt():
         "Allow: /\n"
     ), 200, {
         "Content-Type": "text/plain"
+    }
+
+
+# =========================================================
+# SITEMAP.XML
+# =========================================================
+
+@app.route("/sitemap.xml")
+def sitemap():
+
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://studymate-ai-dydg.onrender.com/</loc>
+    </url>
+</urlset>""", 200, {
+        "Content-Type": "application/xml"
     }
 
 
@@ -918,6 +936,15 @@ def submit_quiz():
 
 
 # =========================================================
+# SITEMAP.XML
+# =========================================================
+
+# Sitemap route added above the error handler.
+# This makes the homepage discoverable through
+# https://studymate-ai-dydg.onrender.com/sitemap.xml
+
+
+# =========================================================
 # FILE TOO LARGE
 # =========================================================
 
@@ -945,3 +972,4 @@ if __name__ == "__main__":
     app.run(
         debug=True
     )
+````
