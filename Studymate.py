@@ -40,17 +40,14 @@ app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024
 
 ALLOWED_EXTENSIONS = {"pdf"}
 
+
 # =========================================================
 # STUDYMATE STUDENT BETA LIMITS
 # =========================================================
-# Each browser session gets:
-# - 5 AI tutor questions
-# - 1 quiz generation
-#
-# These limits help keep the free-tier API usable while
-# StudyMate is being tested with real students.
+
 MAX_CHAT_QUESTIONS = 5
 MAX_QUIZ_GENERATIONS = 1
+
 
 os.makedirs(
     UPLOAD_FOLDER,
@@ -93,15 +90,25 @@ def get_user_id():
 
 def get_beta_usage():
     """Return this browser session's beta usage counters."""
+
     return {
-        "chat_questions": session.get("chat_questions", 0),
-        "quiz_generations": session.get("quiz_generations", 0),
+        "chat_questions": session.get(
+            "chat_questions",
+            0
+        ),
+
+        "quiz_generations": session.get(
+            "quiz_generations",
+            0
+        ),
     }
 
 
 def beta_limit_message(kind):
     """Return a friendly message when a beta limit is reached."""
+
     if kind == "chat":
+
         return (
             "You have reached the Student Beta limit of "
             f"{MAX_CHAT_QUESTIONS} AI questions for this session. "
@@ -112,38 +119,6 @@ def beta_limit_message(kind):
         "You have used your 1 free quiz generation for this session. "
         "Thanks for testing StudyMate!"
     )
-
-
-def save_feedback(feedback_type, details=""):
-    """Save lightweight beta feedback for product testing."""
-    feedback_file = os.path.join(get_user_folder(), "feedback.json")
-
-    entry = {
-        "user_id": get_user_id(),
-        "type": feedback_type,
-        "details": details.strip()[:1000],
-    }
-
-    try:
-        existing = []
-
-        if os.path.exists(feedback_file):
-            with open(feedback_file, "r", encoding="utf-8") as file:
-                existing = json.load(file)
-
-            if not isinstance(existing, list):
-                existing = []
-
-        existing.append(entry)
-
-        with open(feedback_file, "w", encoding="utf-8") as file:
-            json.dump(existing, file, indent=2, ensure_ascii=False)
-
-        return True
-
-    except Exception as e:
-        print("FEEDBACK ERROR:", e)
-        return False
 
 
 # =========================================================
@@ -168,6 +143,84 @@ def get_user_folder():
 
 
 # =========================================================
+# SAVE FEEDBACK
+# =========================================================
+
+def save_feedback(
+    feedback_type,
+    details=""
+):
+
+    feedback_file = os.path.join(
+        get_user_folder(),
+        "feedback.json"
+    )
+
+    entry = {
+
+        "user_id":
+            get_user_id(),
+
+        "type":
+            feedback_type,
+
+        "details":
+            details.strip()[:1000],
+    }
+
+    try:
+
+        existing = []
+
+        if os.path.exists(
+            feedback_file
+        ):
+
+            with open(
+                feedback_file,
+                "r",
+                encoding="utf-8"
+            ) as file:
+
+                existing = json.load(file)
+
+            if not isinstance(
+                existing,
+                list
+            ):
+
+                existing = []
+
+        existing.append(
+            entry
+        )
+
+        with open(
+            feedback_file,
+            "w",
+            encoding="utf-8"
+        ) as file:
+
+            json.dump(
+                existing,
+                file,
+                indent=2,
+                ensure_ascii=False
+            )
+
+        return True
+
+    except Exception as e:
+
+        print(
+            "FEEDBACK ERROR:",
+            e
+        )
+
+        return False
+
+
+# =========================================================
 # STUDY MATERIAL PATH
 # =========================================================
 
@@ -186,11 +239,13 @@ def get_material_path():
 def allowed_file(filename):
 
     return (
-        "." in filename
+        "."
+        in filename
         and filename.rsplit(
             ".",
             1
-        )[1].lower() in ALLOWED_EXTENSIONS
+        )[1].lower()
+        in ALLOWED_EXTENSIONS
     )
 
 
@@ -249,7 +304,9 @@ def sitemap():
 )
 def upload():
 
-    pdf = request.files.get("pdf")
+    pdf = request.files.get(
+        "pdf"
+    )
 
     if not pdf or pdf.filename == "":
 
@@ -258,7 +315,9 @@ def upload():
             error="Please choose a PDF."
         )
 
-    if not allowed_file(pdf.filename):
+    if not allowed_file(
+        pdf.filename
+    ):
 
         return render_template(
             "index.html",
@@ -283,11 +342,15 @@ def upload():
         safe_filename
     )
 
-    pdf.save(filepath)
+    pdf.save(
+        filepath
+    )
 
     try:
 
-        document = fitz.open(filepath)
+        document = fitz.open(
+            filepath
+        )
 
         text = ""
 
@@ -310,8 +373,13 @@ def upload():
 
         if not text.strip():
 
-            if os.path.exists(filepath):
-                os.remove(filepath)
+            if os.path.exists(
+                filepath
+            ):
+
+                os.remove(
+                    filepath
+                )
 
             return render_template(
                 "index.html",
@@ -330,11 +398,19 @@ def upload():
             encoding="utf-8"
         ) as file:
 
-            file.write(text)
+            file.write(
+                text
+            )
 
-        print("\n==============================")
-        print("PDF UPLOAD SUCCESS")
-        print("==============================")
+        print(
+            "\n=============================="
+        )
+        print(
+            "PDF UPLOAD SUCCESS"
+        )
+        print(
+            "=============================="
+        )
         print(
             f"User: {get_user_id()[:8]}"
         )
@@ -344,7 +420,9 @@ def upload():
         print(
             f"Characters: {len(text)}"
         )
-        print("==============================\n")
+        print(
+            "==============================\n"
+        )
 
         return render_template(
             "index.html",
@@ -361,8 +439,13 @@ def upload():
             e
         )
 
-        if os.path.exists(filepath):
-            os.remove(filepath)
+        if os.path.exists(
+            filepath
+        ):
+
+            os.remove(
+                filepath
+            )
 
         return render_template(
             "index.html",
@@ -462,13 +545,22 @@ def ask():
     usage = get_beta_usage()
 
     if usage["chat_questions"] >= MAX_CHAT_QUESTIONS:
+
         return render_template(
             "index.html",
-            error=beta_limit_message("chat"),
+
+            error=beta_limit_message(
+                "chat"
+            ),
+
             beta_usage=usage,
+
             beta_limits={
-                "chat_questions": MAX_CHAT_QUESTIONS,
-                "quiz_generations": MAX_QUIZ_GENERATIONS,
+                "chat_questions":
+                    MAX_CHAT_QUESTIONS,
+
+                "quiz_generations":
+                    MAX_QUIZ_GENERATIONS,
             },
         )
 
@@ -524,22 +616,38 @@ STUDENT QUESTION:
 {question}
 """
 
-    answer = ask_gemini(prompt)
+    answer = ask_gemini(
+        prompt
+    )
 
-    # Count a question only when StudyMate actually receives
-    # a response from the Gemini call.
-    if not answer.startswith("Gemini error:") and answer != "Gemini API key is not configured.":
-        session["chat_questions"] = usage["chat_questions"] + 1
+    # Only count successful Gemini responses.
+    if (
+        not answer.startswith(
+            "Gemini error:"
+        )
+        and answer
+        != "Gemini API key is not configured."
+    ):
+
+        session["chat_questions"] = (
+            usage["chat_questions"] + 1
+        )
 
     updated_usage = get_beta_usage()
 
     return render_template(
         "index.html",
+
         answer=answer,
+
         beta_usage=updated_usage,
+
         beta_limits={
-            "chat_questions": MAX_CHAT_QUESTIONS,
-            "quiz_generations": MAX_QUIZ_GENERATIONS,
+            "chat_questions":
+                MAX_CHAT_QUESTIONS,
+
+            "quiz_generations":
+                MAX_QUIZ_GENERATIONS,
         },
     )
 
@@ -588,13 +696,22 @@ def quiz():
     usage = get_beta_usage()
 
     if usage["quiz_generations"] >= MAX_QUIZ_GENERATIONS:
+
         return render_template(
             "index.html",
-            error=beta_limit_message("quiz"),
+
+            error=beta_limit_message(
+                "quiz"
+            ),
+
             beta_usage=usage,
+
             beta_limits={
-                "chat_questions": MAX_CHAT_QUESTIONS,
-                "quiz_generations": MAX_QUIZ_GENERATIONS,
+                "chat_questions":
+                    MAX_CHAT_QUESTIONS,
+
+                "quiz_generations":
+                    MAX_QUIZ_GENERATIONS,
             },
         )
 
@@ -607,9 +724,15 @@ def quiz():
             error="Please upload a PDF first."
         )
 
-    print("\n==============================")
-    print("GENERATING QUIZ")
-    print("==============================")
+    print(
+        "\n=============================="
+    )
+    print(
+        "GENERATING QUIZ"
+    )
+    print(
+        "=============================="
+    )
     print(
         f"Questions requested: {num_questions}"
     )
@@ -619,7 +742,9 @@ def quiz():
     print(
         f"Study material: {len(study_material)} characters"
     )
-    print("==============================\n")
+    print(
+        "==============================\n"
+    )
 
     prompt = f"""
 You are StudyMate, an educational quiz generator.
@@ -672,19 +797,33 @@ STUDY MATERIAL:
 ==============================
 """
 
-    quiz_text = ask_gemini(prompt)
+    quiz_text = ask_gemini(
+        prompt
+    )
 
-    print("\n==============================")
-    print("RAW QUIZ RESPONSE")
-    print("==============================")
-    print(quiz_text)
-    print("==============================\n")
+    print(
+        "\n=============================="
+    )
+    print(
+        "RAW QUIZ RESPONSE"
+    )
+    print(
+        "=============================="
+    )
+    print(
+        quiz_text
+    )
+    print(
+        "==============================\n"
+    )
 
     try:
 
         quiz_text = quiz_text.strip()
 
-        if quiz_text.startswith("```"):
+        if quiz_text.startswith(
+            "```"
+        ):
 
             lines = quiz_text.splitlines()
 
@@ -692,18 +831,27 @@ STUDY MATERIAL:
 
             for line in lines:
 
-                if line.strip().startswith("```"):
+                if line.strip().startswith(
+                    "```"
+                ):
+
                     continue
 
-                cleaned_lines.append(line)
+                cleaned_lines.append(
+                    line
+                )
 
             quiz_text = "\n".join(
                 cleaned_lines
             ).strip()
 
-        start = quiz_text.find("[")
+        start = quiz_text.find(
+            "["
+        )
 
-        end = quiz_text.rfind("]")
+        end = quiz_text.rfind(
+            "]"
+        )
 
         if start == -1 or end == -1:
 
@@ -816,39 +964,67 @@ STUDY MATERIAL:
                 question["explanation"] = ""
 
         session["quiz"] = questions
-        session["quiz_generations"] = usage["quiz_generations"] + 1
 
-        print("\n==============================")
-        print("QUIZ GENERATED SUCCESSFULLY")
-        print("==============================")
+        session["quiz_generations"] = (
+            usage["quiz_generations"] + 1
+        )
+
+        print(
+            "\n=============================="
+        )
+        print(
+            "QUIZ GENERATED SUCCESSFULLY"
+        )
+        print(
+            "=============================="
+        )
         print(
             f"Questions: {len(questions)}"
         )
         print(
             f"Difficulty: {difficulty}"
         )
-        print("==============================\n")
+        print(
+            "==============================\n"
+        )
 
         return render_template(
             "index.html",
+
             quiz=questions,
+
             beta_usage=get_beta_usage(),
+
             beta_limits={
-                "chat_questions": MAX_CHAT_QUESTIONS,
-                "quiz_generations": MAX_QUIZ_GENERATIONS,
+                "chat_questions":
+                    MAX_CHAT_QUESTIONS,
+
+                "quiz_generations":
+                    MAX_QUIZ_GENERATIONS,
             },
         )
 
     except Exception as e:
 
-        print("\n==============================")
-        print("QUIZ PARSING ERROR")
-        print("==============================")
-        print(e)
-        print("==============================\n")
+        print(
+            "\n=============================="
+        )
+        print(
+            "QUIZ PARSING ERROR"
+        )
+        print(
+            "=============================="
+        )
+        print(
+            e
+        )
+        print(
+            "==============================\n"
+        )
 
         return render_template(
             "index.html",
+
             error=(
                 "StudyMate couldn't generate "
                 "a valid quiz this time. "
@@ -875,6 +1051,7 @@ def submit_quiz():
 
         return render_template(
             "index.html",
+
             error=(
                 "Please generate a quiz first."
             )
@@ -937,7 +1114,6 @@ def submit_quiz():
                     "explanation",
                     ""
                 )
-
         })
 
     total = len(
@@ -973,15 +1149,56 @@ def submit_quiz():
 )
 def feedback():
 
-    feedback_type = request.form.get(
-        "feedback_type",
-        ""
-    ).strip().lower()
+    # -----------------------------------------------------
+    # Support the JSON sent by index.html
+    # -----------------------------------------------------
 
-    details = request.form.get(
-        "details",
-        ""
-    ).strip()
+    data = request.get_json(
+        silent=True
+    )
+
+    if data is None:
+
+        # Also support normal form requests
+        # for compatibility.
+
+        feedback_type = request.form.get(
+            "feedback_type",
+            request.form.get(
+                "feedback",
+                ""
+            )
+        ).strip().lower()
+
+        details = request.form.get(
+            "details",
+            request.form.get(
+                "message",
+                ""
+            )
+        ).strip()
+
+    else:
+
+        feedback_type = str(
+            data.get(
+                "feedback",
+                data.get(
+                    "feedback_type",
+                    ""
+                )
+            )
+        ).strip().lower()
+
+        details = str(
+            data.get(
+                "message",
+                data.get(
+                    "details",
+                    ""
+                )
+            )
+        ).strip()
 
     allowed_feedback = {
         "helpful",
@@ -990,31 +1207,42 @@ def feedback():
     }
 
     if feedback_type not in allowed_feedback:
-        return render_template(
-            "index.html",
-            error="Invalid feedback type."
-        )
 
-    save_feedback(
+        return {
+            "success": False,
+            "message": "Invalid feedback type."
+        }, 400
+
+    saved = save_feedback(
         feedback_type,
         details
     )
 
-    labels = {
-        "helpful": "Thanks! Your feedback helps improve StudyMate.",
-        "incorrect": "Thanks for reporting this. I'll use it to improve StudyMate.",
-        "report": "Thanks for reporting the problem. I'll look into it.",
+    if not saved:
+
+        return {
+            "success": False,
+            "message": "Could not save feedback."
+        }, 500
+
+    messages = {
+
+        "helpful":
+            "Thanks! Your feedback helps improve StudyMate.",
+
+        "incorrect":
+            "Thanks for reporting this. I'll use it to improve StudyMate.",
+
+        "report":
+            "Thanks for reporting the problem. I'll look into it.",
     }
 
-    return render_template(
-        "index.html",
-        success=labels[feedback_type],
-        beta_usage=get_beta_usage(),
-        beta_limits={
-            "chat_questions": MAX_CHAT_QUESTIONS,
-            "quiz_generations": MAX_QUIZ_GENERATIONS,
-        },
-    )
+    return {
+        "success": True,
+        "message": messages[
+            feedback_type
+        ]
+    }, 200
 
 
 # =========================================================
