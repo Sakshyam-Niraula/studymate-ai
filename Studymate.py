@@ -9,15 +9,10 @@ import uuid
 
 
 # =========================================================
-# LOAD ENVIRONMENT VARIABLES
+# SETUP
 # =========================================================
 
 load_dotenv()
-
-
-# =========================================================
-# FLASK APP
-# =========================================================
 
 app = Flask(__name__)
 
@@ -26,37 +21,20 @@ app.secret_key = os.environ.get(
     "studymate-development-key"
 )
 
-
-# =========================================================
-# CONFIGURATION
-# =========================================================
-
 UPLOAD_FOLDER = "uploads"
-
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-
-# Maximum PDF size: 20 MB
 app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024
 
 ALLOWED_EXTENSIONS = {"pdf"}
 
-
-# =========================================================
-# STUDYMATE STUDENT BETA LIMITS
-# =========================================================
-
 MAX_CHAT_QUESTIONS = 5
 MAX_QUIZ_GENERATIONS = 1
 
-
-os.makedirs(
-    UPLOAD_FOLDER,
-    exist_ok=True
-)
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 # =========================================================
-# GEMINI CONFIGURATION
+# GEMINI
 # =========================================================
 
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -64,11 +42,7 @@ api_key = os.environ.get("GEMINI_API_KEY")
 if not api_key:
     print("WARNING: GEMINI_API_KEY is not configured.")
 
-client = (
-    genai.Client(api_key=api_key)
-    if api_key
-    else None
-)
+client = genai.Client(api_key=api_key) if api_key else None
 
 MODEL_NAME = "models/gemini-3.6-flash"
 
@@ -78,37 +52,21 @@ MODEL_NAME = "models/gemini-3.6-flash"
 # =========================================================
 
 def get_user_id():
-
     if "user_id" not in session:
-
-        session["user_id"] = str(
-            uuid.uuid4()
-        )
+        session["user_id"] = str(uuid.uuid4())
 
     return session["user_id"]
 
 
 def get_beta_usage():
-    """Return this browser session's beta usage counters."""
-
     return {
-        "chat_questions": session.get(
-            "chat_questions",
-            0
-        ),
-
-        "quiz_generations": session.get(
-            "quiz_generations",
-            0
-        ),
+        "chat_questions": session.get("chat_questions", 0),
+        "quiz_generations": session.get("quiz_generations", 0)
     }
 
 
 def beta_limit_message(kind):
-    """Return a friendly message when a beta limit is reached."""
-
     if kind == "chat":
-
         return (
             "You have reached the Student Beta limit of "
             f"{MAX_CHAT_QUESTIONS} AI questions for this session. "
@@ -122,11 +80,10 @@ def beta_limit_message(kind):
 
 
 # =========================================================
-# USER-SPECIFIC FOLDER
+# USER FILES
 # =========================================================
 
 def get_user_folder():
-
     user_id = get_user_id()
 
     folder = os.path.join(
@@ -134,73 +91,55 @@ def get_user_folder():
         user_id
     )
 
-    os.makedirs(
-        folder,
-        exist_ok=True
-    )
+    os.makedirs(folder, exist_ok=True)
 
     return folder
 
 
+def get_material_path():
+    return os.path.join(
+        get_user_folder(),
+        "study_material.txt"
+    )
+
+
 # =========================================================
-# SAVE FEEDBACK
+# FEEDBACK
 # =========================================================
 
-def save_feedback(
-    feedback_type,
-    details=""
-):
-
+def save_feedback(feedback_type, details=""):
     feedback_file = os.path.join(
         get_user_folder(),
         "feedback.json"
     )
 
     entry = {
-
-        "user_id":
-            get_user_id(),
-
-        "type":
-            feedback_type,
-
-        "details":
-            details.strip()[:1000],
+        "user_id": get_user_id(),
+        "type": feedback_type,
+        "details": details.strip()[:1000]
     }
 
     try:
-
         existing = []
 
-        if os.path.exists(
-            feedback_file
-        ):
-
+        if os.path.exists(feedback_file):
             with open(
                 feedback_file,
                 "r",
                 encoding="utf-8"
             ) as file:
-
                 existing = json.load(file)
 
-            if not isinstance(
-                existing,
-                list
-            ):
-
+            if not isinstance(existing, list):
                 existing = []
 
-        existing.append(
-            entry
-        )
+        existing.append(entry)
 
         with open(
             feedback_file,
             "w",
             encoding="utf-8"
         ) as file:
-
             json.dump(
                 existing,
                 file,
@@ -211,94 +150,54 @@ def save_feedback(
         return True
 
     except Exception as e:
-
-        print(
-            "FEEDBACK ERROR:",
-            e
-        )
-
+        print("FEEDBACK ERROR:", e)
         return False
 
 
 # =========================================================
-# STUDY MATERIAL PATH
-# =========================================================
-
-def get_material_path():
-
-    return os.path.join(
-        get_user_folder(),
-        "study_material.txt"
-    )
-
-
-# =========================================================
-# CHECK FILE
+# FILE VALIDATION
 # =========================================================
 
 def allowed_file(filename):
-
     return (
-        "."
-        in filename
-        and filename.rsplit(
-            ".",
-            1
-        )[1].lower()
+        "." in filename
+        and filename.rsplit(".", 1)[1].lower()
         in ALLOWED_EXTENSIONS
     )
 
 
 # =========================================================
-# PUBLIC PAGES + SEO
+# PUBLIC SEO PAGES
 # =========================================================
 
 @app.route("/")
 def home():
-
-    return render_template(
-        "index.html"
-    )
+    return render_template("index.html")
 
 
 @app.route("/ai-study-assistant")
 def ai_study_assistant():
-
-    return render_template(
-        "ai-study-assistant.html"
-    )
+    return render_template("ai-study-assistant.html")
 
 
 @app.route("/ai-quiz-generator")
 def ai_quiz_generator():
-
-    return render_template(
-        "ai-quiz-generator.html"
-    )
+    return render_template("ai-quiz-generator.html")
 
 
 @app.route("/ai-pdf-study-tool")
 def ai_pdf_study_tool():
-
-    return render_template(
-        "ai-pdf-study-tool.html"
-    )
+    return render_template("ai-pdf-study-tool.html")
 
 
 @app.route("/how-it-works")
 def how_it_works():
-
-    return render_template(
-        "how-it-works.html"
-    )
+    return render_template("how-it-works.html")
 
 
 @app.route("/about")
 def about():
-
-    return render_template(
-        "about.html"
-    )
+    return render_template("about.html")
 
 
 # =========================================================
@@ -307,12 +206,13 @@ def about():
 
 @app.route("/robots.txt")
 def robots_txt():
+    robots = """User-agent: *
+Allow: /
 
-    return (
-        "User-agent: *\n"
-        "Allow: /\n\n"
-        "Sitemap: https://studymate-ai-dydg.onrender.com/sitemap.xml\n"
-    ), 200, {
+Sitemap: https://studymate-ai-dydg.onrender.com/sitemap.xml
+"""
+
+    return robots, 200, {
         "Content-Type": "text/plain"
     }
 
@@ -323,8 +223,7 @@ def robots_txt():
 
 @app.route("/sitemap.xml")
 def sitemap():
-
-    return """<?xml version="1.0" encoding="UTF-8"?>
+    sitemap_xml = """<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <url>
@@ -351,7 +250,10 @@ def sitemap():
         <loc>https://studymate-ai-dydg.onrender.com/about</loc>
     </url>
 
-</urlset>""", 200, {
+</urlset>
+"""
+
+    return sitemap_xml, 200, {
         "Content-Type": "application/xml"
     }
 
@@ -360,38 +262,25 @@ def sitemap():
 # UPLOAD PDF
 # =========================================================
 
-@app.route(
-    "/upload",
-    methods=["POST"]
-)
+@app.route("/upload", methods=["POST"])
 def upload():
-
-    pdf = request.files.get(
-        "pdf"
-    )
+    pdf = request.files.get("pdf")
 
     if not pdf or pdf.filename == "":
-
         return render_template(
             "index.html",
             error="Please choose a PDF."
         )
 
-    if not allowed_file(
-        pdf.filename
-    ):
-
+    if not allowed_file(pdf.filename):
         return render_template(
             "index.html",
             error="Only PDF files are allowed."
         )
 
-    safe_filename = secure_filename(
-        pdf.filename
-    )
+    safe_filename = secure_filename(pdf.filename)
 
     if not safe_filename:
-
         return render_template(
             "index.html",
             error="Invalid filename."
@@ -404,15 +293,10 @@ def upload():
         safe_filename
     )
 
-    pdf.save(
-        filepath
-    )
-
     try:
+        pdf.save(filepath)
 
-        document = fitz.open(
-            filepath
-        )
+        document = fitz.open(filepath)
 
         text = ""
 
@@ -420,7 +304,6 @@ def upload():
             document,
             start=1
         ):
-
             page_text = page.get_text()
 
             print(
@@ -434,21 +317,14 @@ def upload():
         document.close()
 
         if not text.strip():
-
-            if os.path.exists(
-                filepath
-            ):
-
-                os.remove(
-                    filepath
-                )
+            if os.path.exists(filepath):
+                os.remove(filepath)
 
             return render_template(
                 "index.html",
                 error=(
-                    "This PDF contains no selectable "
-                    "text. It may be a scanned or "
-                    "image-based PDF."
+                    "This PDF contains no selectable text. "
+                    "It may be a scanned or image-based PDF."
                 )
             )
 
@@ -459,61 +335,31 @@ def upload():
             "w",
             encoding="utf-8"
         ) as file:
+            file.write(text)
 
-            file.write(
-                text
-            )
-
-        print(
-            "\n=============================="
-        )
-        print(
-            "PDF UPLOAD SUCCESS"
-        )
-        print(
-            "=============================="
-        )
-        print(
-            f"User: {get_user_id()[:8]}"
-        )
-        print(
-            f"File: {safe_filename}"
-        )
-        print(
-            f"Characters: {len(text)}"
-        )
-        print(
-            "==============================\n"
-        )
+        print("==============================")
+        print("PDF UPLOAD SUCCESS")
+        print("==============================")
+        print(f"User: {get_user_id()[:8]}")
+        print(f"File: {safe_filename}")
+        print(f"Characters: {len(text)}")
+        print("==============================")
 
         return render_template(
             "index.html",
             filename=safe_filename,
-            success=(
-                "Study material uploaded successfully!"
-            )
+            success="Study material uploaded successfully!"
         )
 
     except Exception as e:
+        print("PDF ERROR:", e)
 
-        print(
-            "PDF ERROR:",
-            e
-        )
-
-        if os.path.exists(
-            filepath
-        ):
-
-            os.remove(
-                filepath
-            )
+        if os.path.exists(filepath):
+            os.remove(filepath)
 
         return render_template(
             "index.html",
-            error=(
-                f"Could not read PDF: {str(e)}"
-            )
+            error=f"Could not read PDF: {str(e)}"
         )
 
 
@@ -522,13 +368,9 @@ def upload():
 # =========================================================
 
 def get_study_material():
-
     material_path = get_material_path()
 
-    if not os.path.exists(
-        material_path
-    ):
-
+    if not os.path.exists(material_path):
         return None
 
     with open(
@@ -536,69 +378,45 @@ def get_study_material():
         "r",
         encoding="utf-8"
     ) as file:
-
         return file.read()
 
 
 # =========================================================
-# GEMINI FUNCTION
+# GEMINI REQUEST
 # =========================================================
 
 def ask_gemini(prompt):
-
     if client is None:
-
-        return (
-            "Gemini API key is not configured."
-        )
+        return "Gemini API key is not configured."
 
     try:
-
         response = client.models.generate_content(
-
             model=MODEL_NAME,
-
             contents=prompt
-
         )
 
         if not response.text:
-
-            return (
-                "Gemini returned an empty response."
-            )
+            return "Gemini returned an empty response."
 
         return response.text
 
     except Exception as e:
-
-        print(
-            "GEMINI ERROR:",
-            e
-        )
-
-        return (
-            f"Gemini error: {str(e)}"
-        )
+        print("GEMINI ERROR:", e)
+        return f"Gemini error: {str(e)}"
 
 
 # =========================================================
-# ASK STUDYMATE
+# ASK AI
 # =========================================================
 
-@app.route(
-    "/ask",
-    methods=["POST"]
-)
+@app.route("/ask", methods=["POST"])
 def ask():
-
     question = request.form.get(
         "question",
         ""
     ).strip()
 
     if not question:
-
         return render_template(
             "index.html",
             error="Please enter a question."
@@ -607,29 +425,19 @@ def ask():
     usage = get_beta_usage()
 
     if usage["chat_questions"] >= MAX_CHAT_QUESTIONS:
-
         return render_template(
             "index.html",
-
-            error=beta_limit_message(
-                "chat"
-            ),
-
+            error=beta_limit_message("chat"),
             beta_usage=usage,
-
             beta_limits={
-                "chat_questions":
-                    MAX_CHAT_QUESTIONS,
-
-                "quiz_generations":
-                    MAX_QUIZ_GENERATIONS,
-            },
+                "chat_questions": MAX_CHAT_QUESTIONS,
+                "quiz_generations": MAX_QUIZ_GENERATIONS
+            }
         )
 
     study_material = get_study_material()
 
     if study_material is None:
-
         return render_template(
             "index.html",
             answer="Please upload a PDF first."
@@ -665,6 +473,7 @@ When appropriate, structure the answer as:
 
 🧠 Quick check
 
+Do NOT use Markdown code fences such as ```.
 
 STUDY MATERIAL:
 ==============================
@@ -678,19 +487,12 @@ STUDENT QUESTION:
 {question}
 """
 
-    answer = ask_gemini(
-        prompt
-    )
+    answer = ask_gemini(prompt)
 
-    # Only count successful Gemini responses.
     if (
-        not answer.startswith(
-            "Gemini error:"
-        )
-        and answer
-        != "Gemini API key is not configured."
+        not answer.startswith("Gemini error:")
+        and answer != "Gemini API key is not configured."
     ):
-
         session["chat_questions"] = (
             usage["chat_questions"] + 1
         )
@@ -699,18 +501,12 @@ STUDENT QUESTION:
 
     return render_template(
         "index.html",
-
         answer=answer,
-
         beta_usage=updated_usage,
-
         beta_limits={
-            "chat_questions":
-                MAX_CHAT_QUESTIONS,
-
-            "quiz_generations":
-                MAX_QUIZ_GENERATIONS,
-        },
+            "chat_questions": MAX_CHAT_QUESTIONS,
+            "quiz_generations": MAX_QUIZ_GENERATIONS
+        }
     )
 
 
@@ -718,12 +514,8 @@ STUDENT QUESTION:
 # GENERATE QUIZ
 # =========================================================
 
-@app.route(
-    "/quiz",
-    methods=["POST"]
-)
+@app.route("/quiz", methods=["POST"])
 def quiz():
-
     num_questions = request.form.get(
         "num_questions",
         "5"
@@ -742,7 +534,6 @@ def quiz():
     }
 
     if num_questions not in allowed_numbers:
-
         num_questions = "5"
 
     allowed_difficulties = {
@@ -752,61 +543,39 @@ def quiz():
     }
 
     if difficulty not in allowed_difficulties:
-
         difficulty = "medium"
 
     usage = get_beta_usage()
 
     if usage["quiz_generations"] >= MAX_QUIZ_GENERATIONS:
-
         return render_template(
             "index.html",
-
-            error=beta_limit_message(
-                "quiz"
-            ),
-
+            error=beta_limit_message("quiz"),
             beta_usage=usage,
-
             beta_limits={
-                "chat_questions":
-                    MAX_CHAT_QUESTIONS,
-
-                "quiz_generations":
-                    MAX_QUIZ_GENERATIONS,
-            },
+                "chat_questions": MAX_CHAT_QUESTIONS,
+                "quiz_generations": MAX_QUIZ_GENERATIONS
+            }
         )
 
     study_material = get_study_material()
 
     if study_material is None:
-
         return render_template(
             "index.html",
             error="Please upload a PDF first."
         )
 
+    print("==============================")
+    print("GENERATING QUIZ")
+    print("==============================")
+    print(f"Questions requested: {num_questions}")
+    print(f"Difficulty: {difficulty}")
     print(
-        "\n=============================="
+        f"Study material: "
+        f"{len(study_material)} characters"
     )
-    print(
-        "GENERATING QUIZ"
-    )
-    print(
-        "=============================="
-    )
-    print(
-        f"Questions requested: {num_questions}"
-    )
-    print(
-        f"Difficulty: {difficulty}"
-    )
-    print(
-        f"Study material: {len(study_material)} characters"
-    )
-    print(
-        "==============================\n"
-    )
+    print("==============================")
 
     prompt = f"""
 You are StudyMate, an educational quiz generator.
@@ -859,64 +628,36 @@ STUDY MATERIAL:
 ==============================
 """
 
-    quiz_text = ask_gemini(
-        prompt
-    )
+    quiz_text = ask_gemini(prompt)
 
-    print(
-        "\n=============================="
-    )
-    print(
-        "RAW QUIZ RESPONSE"
-    )
-    print(
-        "=============================="
-    )
-    print(
-        quiz_text
-    )
-    print(
-        "==============================\n"
-    )
+    print("==============================")
+    print("RAW QUIZ RESPONSE")
+    print("==============================")
+    print(quiz_text)
+    print("==============================")
 
     try:
-
         quiz_text = quiz_text.strip()
 
-        if quiz_text.startswith(
-            "```"
-        ):
-
+        if quiz_text.startswith("```"):
             lines = quiz_text.splitlines()
 
             cleaned_lines = []
 
             for line in lines:
-
-                if line.strip().startswith(
-                    "```"
-                ):
-
+                if line.strip().startswith("```"):
                     continue
 
-                cleaned_lines.append(
-                    line
-                )
+                cleaned_lines.append(line)
 
             quiz_text = "\n".join(
                 cleaned_lines
             ).strip()
 
-        start = quiz_text.find(
-            "["
-        )
-
-        end = quiz_text.rfind(
-            "]"
-        )
+        start = quiz_text.find("[")
+        end = quiz_text.rfind("]")
 
         if start == -1 or end == -1:
-
             raise ValueError(
                 "No JSON array found."
             )
@@ -925,48 +666,32 @@ STUDY MATERIAL:
             start:end + 1
         ]
 
-        questions = json.loads(
-            quiz_text
-        )
+        questions = json.loads(quiz_text)
 
-        if not isinstance(
-            questions,
-            list
-        ):
-
+        if not isinstance(questions, list):
             raise ValueError(
                 "Quiz response is not a list."
             )
 
-        if len(questions) != int(
-            num_questions
-        ):
-
+        if len(questions) != int(num_questions):
             raise ValueError(
-                f"Expected {num_questions} "
-                f"questions but received "
-                f"{len(questions)}."
+                f"Expected {num_questions} questions "
+                f"but received {len(questions)}."
             )
 
         for question in questions:
 
-            if not isinstance(
-                question,
-                dict
-            ):
-
+            if not isinstance(question, dict):
                 raise ValueError(
                     "Invalid question object."
                 )
 
             if "question" not in question:
-
                 raise ValueError(
                     "Question text missing."
                 )
 
             if "options" not in question:
-
                 raise ValueError(
                     "Question options missing."
                 )
@@ -975,37 +700,28 @@ STUDY MATERIAL:
                 question["options"],
                 list
             ):
-
                 raise ValueError(
                     "Options must be a list."
                 )
 
-            if len(
-                question["options"]
-            ) != 4:
-
+            if len(question["options"]) != 4:
                 raise ValueError(
-                    "Every question must have "
-                    "exactly 4 options."
+                    "Every question must have exactly 4 options."
                 )
 
             if "answer" not in question:
-
                 raise ValueError(
                     "Correct answer missing."
                 )
 
             try:
-
                 question["answer"] = int(
                     question["answer"]
                 )
-
             except (
                 TypeError,
                 ValueError
             ):
-
                 raise ValueError(
                     "Answer must be 0, 1, 2 or 3."
                 )
@@ -1016,13 +732,11 @@ STUDY MATERIAL:
                 2,
                 3
             }:
-
                 raise ValueError(
                     "Invalid answer index."
                 )
 
             if "explanation" not in question:
-
                 question["explanation"] = ""
 
         session["quiz"] = questions
@@ -1031,62 +745,32 @@ STUDY MATERIAL:
             usage["quiz_generations"] + 1
         )
 
-        print(
-            "\n=============================="
-        )
-        print(
-            "QUIZ GENERATED SUCCESSFULLY"
-        )
-        print(
-            "=============================="
-        )
-        print(
-            f"Questions: {len(questions)}"
-        )
-        print(
-            f"Difficulty: {difficulty}"
-        )
-        print(
-            "==============================\n"
-        )
+        print("==============================")
+        print("QUIZ GENERATED SUCCESSFULLY")
+        print("==============================")
+        print(f"Questions: {len(questions)}")
+        print(f"Difficulty: {difficulty}")
+        print("==============================")
 
         return render_template(
             "index.html",
-
             quiz=questions,
-
             beta_usage=get_beta_usage(),
-
             beta_limits={
-                "chat_questions":
-                    MAX_CHAT_QUESTIONS,
-
-                "quiz_generations":
-                    MAX_QUIZ_GENERATIONS,
-            },
+                "chat_questions": MAX_CHAT_QUESTIONS,
+                "quiz_generations": MAX_QUIZ_GENERATIONS
+            }
         )
 
     except Exception as e:
-
-        print(
-            "\n=============================="
-        )
-        print(
-            "QUIZ PARSING ERROR"
-        )
-        print(
-            "=============================="
-        )
-        print(
-            e
-        )
-        print(
-            "==============================\n"
-        )
+        print("==============================")
+        print("QUIZ PARSING ERROR")
+        print("==============================")
+        print(e)
+        print("==============================")
 
         return render_template(
             "index.html",
-
             error=(
                 "StudyMate couldn't generate "
                 "a valid quiz this time. "
@@ -1099,49 +783,31 @@ STUDY MATERIAL:
 # SUBMIT QUIZ
 # =========================================================
 
-@app.route(
-    "/submit_quiz",
-    methods=["POST"]
-)
+@app.route("/submit_quiz", methods=["POST"])
 def submit_quiz():
-
-    questions = session.get(
-        "quiz"
-    )
+    questions = session.get("quiz")
 
     if not questions:
-
         return render_template(
             "index.html",
-
-            error=(
-                "Please generate a quiz first."
-            )
+            error="Please generate a quiz first."
         )
 
     score = 0
-
     results = []
 
-    for index, question in enumerate(
-        questions
-    ):
+    for index, question in enumerate(questions):
 
         selected = request.form.get(
             f"question_{index}"
         )
 
         try:
-
-            selected_number = int(
-                selected
-            )
-
+            selected_number = int(selected)
         except (
             TypeError,
             ValueError
         ):
-
             selected_number = -1
 
         correct = question["answer"]
@@ -1151,78 +817,45 @@ def submit_quiz():
         )
 
         if is_correct:
-
             score += 1
 
         results.append({
-
-            "question":
-                question["question"],
-
-            "options":
-                question["options"],
-
-            "selected":
-                selected_number,
-
-            "correct":
-                correct,
-
-            "is_correct":
-                is_correct,
-
-            "explanation":
-                question.get(
-                    "explanation",
-                    ""
-                )
+            "question": question["question"],
+            "options": question["options"],
+            "selected": selected_number,
+            "correct": correct,
+            "is_correct": is_correct,
+            "explanation": question.get(
+                "explanation",
+                ""
+            )
         })
 
-    total = len(
-        questions
-    )
+    total = len(questions)
 
     percentage = int(
         (score / total) * 100
     )
 
     return render_template(
-
         "index.html",
-
         results=results,
-
         score=score,
-
         total=total,
-
         percentage=percentage
-
     )
 
 
 # =========================================================
-# BETA FEEDBACK
+# FEEDBACK API
 # =========================================================
 
-@app.route(
-    "/feedback",
-    methods=["POST"]
-)
+@app.route("/feedback", methods=["POST"])
 def feedback():
 
-    # -----------------------------------------------------
-    # Support the JSON sent by index.html
-    # -----------------------------------------------------
-
-    data = request.get_json(
-        silent=True
-    )
+    data = request.get_json(silent=True)
 
     if data is None:
-
-        # Also support normal form requests
-        # for compatibility.
 
         feedback_type = request.form.get(
             "feedback_type",
@@ -1265,11 +898,10 @@ def feedback():
     allowed_feedback = {
         "helpful",
         "incorrect",
-        "report",
+        "report"
     }
 
     if feedback_type not in allowed_feedback:
-
         return {
             "success": False,
             "message": "Invalid feedback type."
@@ -1281,57 +913,53 @@ def feedback():
     )
 
     if not saved:
-
         return {
             "success": False,
             "message": "Could not save feedback."
         }, 500
 
     messages = {
+        "helpful": (
+            "Thanks! Your feedback helps improve StudyMate."
+        ),
 
-        "helpful":
-            "Thanks! Your feedback helps improve StudyMate.",
+        "incorrect": (
+            "Thanks for reporting this. "
+            "I'll use it to improve StudyMate."
+        ),
 
-        "incorrect":
-            "Thanks for reporting this. I'll use it to improve StudyMate.",
-
-        "report":
-            "Thanks for reporting the problem. I'll look into it.",
+        "report": (
+            "Thanks for reporting the problem. "
+            "I'll look into it."
+        )
     }
 
     return {
         "success": True,
-        "message": messages[
-            feedback_type
-        ]
+        "message": messages[feedback_type]
     }, 200
 
 
 # =========================================================
-# FILE TOO LARGE
+# PDF TOO LARGE
 # =========================================================
 
 @app.errorhandler(413)
 def file_too_large(error):
-
     return render_template(
-
         "index.html",
-
         error=(
             "That PDF is too large. "
             "Please upload a PDF smaller than 20 MB."
         )
-
     ), 413
 
 
 # =========================================================
-# RUN
+# START APPLICATION
 # =========================================================
 
 if __name__ == "__main__":
-
     app.run(
         debug=True
     )
