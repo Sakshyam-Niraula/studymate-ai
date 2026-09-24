@@ -40,6 +40,18 @@ app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024
 
 ALLOWED_EXTENSIONS = {"pdf"}
 
+# =========================================================
+# STUDYMATE STUDENT BETA LIMITS
+# =========================================================
+# Each browser session gets:
+# - 5 AI tutor questions
+# - 1 quiz generation
+#
+# These limits help keep the free-tier API usable while
+# StudyMate is being tested with real students.
+MAX_CHAT_QUESTIONS = 5
+MAX_QUIZ_GENERATIONS = 1
+
 os.makedirs(
     UPLOAD_FOLDER,
     exist_ok=True
@@ -77,6 +89,61 @@ def get_user_id():
         )
 
     return session["user_id"]
+
+
+def get_beta_usage():
+    """Return this browser session's beta usage counters."""
+    return {
+        "chat_questions": session.get("chat_questions", 0),
+        "quiz_generations": session.get("quiz_generations", 0),
+    }
+
+
+def beta_limit_message(kind):
+    """Return a friendly message when a beta limit is reached."""
+    if kind == "chat":
+        return (
+            "You have reached the Student Beta limit of "
+            f"{MAX_CHAT_QUESTIONS} AI questions for this session. "
+            "Thanks for testing StudyMate!"
+        )
+
+    return (
+        "You have used your 1 free quiz generation for this session. "
+        "Thanks for testing StudyMate!"
+    )
+
+
+def save_feedback(feedback_type, details=""):
+    """Save lightweight beta feedback for product testing."""
+    feedback_file = os.path.join(get_user_folder(), "feedback.json")
+
+    entry = {
+        "user_id": get_user_id(),
+        "type": feedback_type,
+        "details": details.strip()[:1000],
+    }
+
+    try:
+        existing = []
+
+        if os.path.exists(feedback_file):
+            with open(feedback_file, "r", encoding="utf-8") as file:
+                existing = json.load(file)
+
+            if not isinstance(existing, list):
+                existing = []
+
+        existing.append(entry)
+
+        with open(feedback_file, "w", encoding="utf-8") as file:
+            json.dump(existing, file, indent=2, ensure_ascii=False)
+
+        return True
+
+    except Exception as e:
+        print("FEEDBACK ERROR:", e)
+        return False
 
 
 # =========================================================
@@ -392,6 +459,19 @@ def ask():
             error="Please enter a question."
         )
 
+    usage = get_beta_usage()
+
+    if usage["chat_questions"] >= MAX_CHAT_QUESTIONS:
+        return render_template(
+            "index.html",
+            error=beta_limit_message("chat"),
+            beta_usage=usage,
+            beta_limits={
+                "chat_questions": MAX_CHAT_QUESTIONS,
+                "quiz_generations": MAX_QUIZ_GENERATIONS,
+            },
+        )
+
     study_material = get_study_material()
 
     if study_material is None:
@@ -446,9 +526,21 @@ STUDENT QUESTION:
 
     answer = ask_gemini(prompt)
 
+    # Count a question only when StudyMate actually receives
+    # a response from the Gemini call.
+    if not answer.startswith("Gemini error:") and answer != "Gemini API key is not configured.":
+        session["chat_questions"] = usage["chat_questions"] + 1
+
+    updated_usage = get_beta_usage()
+
     return render_template(
         "index.html",
-        answer=answer
+        answer=answer,
+        beta_usage=updated_usage,
+        beta_limits={
+            "chat_questions": MAX_CHAT_QUESTIONS,
+            "quiz_generations": MAX_QUIZ_GENERATIONS,
+        },
     )
 
 
@@ -492,6 +584,19 @@ def quiz():
     if difficulty not in allowed_difficulties:
 
         difficulty = "medium"
+
+    usage = get_beta_usage()
+
+    if usage["quiz_generations"] >= MAX_QUIZ_GENERATIONS:
+        return render_template(
+            "index.html",
+            error=beta_limit_message("quiz"),
+            beta_usage=usage,
+            beta_limits={
+                "chat_questions": MAX_CHAT_QUESTIONS,
+                "quiz_generations": MAX_QUIZ_GENERATIONS,
+            },
+        )
 
     study_material = get_study_material()
 
@@ -711,6 +816,7 @@ STUDY MATERIAL:
                 question["explanation"] = ""
 
         session["quiz"] = questions
+        session["quiz_generations"] = usage["quiz_generations"] + 1
 
         print("\n==============================")
         print("QUIZ GENERATED SUCCESSFULLY")
@@ -725,7 +831,12 @@ STUDY MATERIAL:
 
         return render_template(
             "index.html",
-            quiz=questions
+            quiz=questions,
+            beta_usage=get_beta_usage(),
+            beta_limits={
+                "chat_questions": MAX_CHAT_QUESTIONS,
+                "quiz_generations": MAX_QUIZ_GENERATIONS,
+            },
         )
 
     except Exception as e:
@@ -849,6 +960,60 @@ def submit_quiz():
 
         percentage=percentage
 
+    )
+
+
+# =========================================================
+# BETA FEEDBACK
+# =========================================================
+
+@app.route(
+    "/feedback",
+    methods=["POST"]
+)
+def feedback():
+
+    feedback_type = request.form.get(
+        "feedback_type",
+        ""
+    ).strip().lower()
+
+    details = request.form.get(
+        "details",
+        ""
+    ).strip()
+
+    allowed_feedback = {
+        "helpful",
+        "incorrect",
+        "report",
+    }
+
+    if feedback_type not in allowed_feedback:
+        return render_template(
+            "index.html",
+            error="Invalid feedback type."
+        )
+
+    save_feedback(
+        feedback_type,
+        details
+    )
+
+    labels = {
+        "helpful": "Thanks! Your feedback helps improve StudyMate.",
+        "incorrect": "Thanks for reporting this. I'll use it to improve StudyMate.",
+        "report": "Thanks for reporting the problem. I'll look into it.",
+    }
+
+    return render_template(
+        "index.html",
+        success=labels[feedback_type],
+        beta_usage=get_beta_usage(),
+        beta_limits={
+            "chat_questions": MAX_CHAT_QUESTIONS,
+            "quiz_generations": MAX_QUIZ_GENERATIONS,
+        },
     )
 
 
