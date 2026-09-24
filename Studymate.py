@@ -250,32 +250,54 @@ def allowed_file(filename):
 
 
 # =========================================================
-# HOME
+# PUBLIC PAGES + SEO
 # =========================================================
+
+@app.route("/")
+def home():
+
+    return render_template(
+        "index.html"
+    )
+
 
 @app.route("/ai-study-assistant")
 def ai_study_assistant():
-    return render_template("ai-study-assistant.html")
+
+    return render_template(
+        "ai-study-assistant.html"
+    )
 
 
 @app.route("/ai-quiz-generator")
 def ai_quiz_generator():
-    return render_template("ai-quiz-generator.html")
+
+    return render_template(
+        "ai-quiz-generator.html"
+    )
 
 
 @app.route("/ai-pdf-study-tool")
 def ai_pdf_study_tool():
-    return render_template("ai-pdf-study-tool.html")
+
+    return render_template(
+        "ai-pdf-study-tool.html"
+    )
 
 
 @app.route("/how-it-works")
 def how_it_works():
-    return render_template("how-it-works.html")
+
+    return render_template(
+        "how-it-works.html"
+    )
 
 
 @app.route("/about")
 def about():
-    return render_template("about.html")
+
+    return render_template(
+        "about.html"
     )
 
 
@@ -304,9 +326,31 @@ def sitemap():
 
     return """<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
     <url>
         <loc>https://studymate-ai-dydg.onrender.com/</loc>
     </url>
+
+    <url>
+        <loc>https://studymate-ai-dydg.onrender.com/ai-study-assistant</loc>
+    </url>
+
+    <url>
+        <loc>https://studymate-ai-dydg.onrender.com/ai-quiz-generator</loc>
+    </url>
+
+    <url>
+        <loc>https://studymate-ai-dydg.onrender.com/ai-pdf-study-tool</loc>
+    </url>
+
+    <url>
+        <loc>https://studymate-ai-dydg.onrender.com/how-it-works</loc>
+    </url>
+
+    <url>
+        <loc>https://studymate-ai-dydg.onrender.com/about</loc>
+    </url>
+
 </urlset>""", 200, {
         "Content-Type": "application/xml"
     }
