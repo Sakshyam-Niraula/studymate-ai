@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,1652 +6,878 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google Search Console Verification -->
-    <meta name="google-site-verification" content="fDE0o-QannkI78z7h5qan8vagJgBqa0WvlM8ShQgkr8">
+    <!-- Google Search Console -->
+    <meta name="google-site-verification"
+          content="fDE0o-QannkI78z7h5qan8vagJgBqa0WvlM8ShQgkr8">
 
     <!-- SEO -->
-    <title>StudyMate AI – AI Study Assistant, Quiz Generator & AI Tutor</title>
+    <title>StudyMate AI - Your Personal AI Learning Workspace</title>
 
     <meta name="description"
-        content="StudyMate AI is a personal AI study assistant that helps students learn from their notes, ask questions, and generate quizzes from study material.">
+          content="StudyMate AI helps students understand documents, chat with AI, generate quizzes, create flashcards and study smarter.">
 
     <meta name="author" content="Sakshyam Niraula">
     <meta name="robots" content="index, follow">
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://studymate-ai-dydg.onrender.com/">
+    <link rel="canonical"
+          href="https://studymate-ai-dydg.onrender.com/">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="StudyMate AI – Your Personal AI Study Assistant">
+    <meta property="og:title"
+          content="StudyMate AI - Your Personal AI Learning Workspace">
     <meta property="og:description"
-        content="Upload your notes, ask questions, and generate AI-powered quizzes with StudyMate AI.">
-    <meta property="og:url" content="https://studymate-ai-dydg.onrender.com/">
+          content="Learn smarter with AI-powered document chat, quizzes and flashcards.">
+    <meta property="og:url"
+          content="https://studymate-ai-dydg.onrender.com/">
     <meta property="og:image"
-        content="{{ url_for('static', filename='Gemini_Generated_Image_fiyjhsfiyjhsfiyj.jfif', _external=True) }}">
+          content="{{ url_for('static', filename='Gemini_Generated_Image_fiyjhsfiyjhsfiyj.jfif', _external=True) }}">
 
-    <style>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f5f5f5;
-            color: #111;
-        }
+    <!-- Icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-        /* =========================
-           NAVBAR
-        ========================= */
+    <!-- StudyMate Styles -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
 
-        .navbar {
-            height: 72px;
-            background: #fff;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 6%;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo img {
-            height: 52px;
-            width: auto;
-            display: block;
-            object-fit: contain;
-        }
-
-        .status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #555;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #111;
-            border-radius: 50%;
-        }
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: auto;
-            padding: 50px 0;
-        }
-
-        .hero {
-            margin-bottom: 35px;
-        }
-
-        .hero h1 {
-            font-size: 42px;
-            letter-spacing: -1.5px;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            color: #666;
-            font-size: 17px;
-        }
-
-        /* =========================
-           BETA
-        ========================= */
-
-        .beta-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            margin-top: 16px;
-            padding: 7px 12px;
-            border: 1px solid #ccc;
-            border-radius: 20px;
-            background: #fff;
-            color: #444;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .beta-dot {
-            width: 7px;
-            height: 7px;
-            background: #111;
-            border-radius: 50%;
-        }
-
-        .beta-note {
-            margin-top: 10px;
-            color: #777;
-            font-size: 13px !important;
-        }
-
-        /* =========================
-           ALERTS
-        ========================= */
-
-        .alert {
-            padding: 14px 18px;
-            background: white;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            font-size: 14px;
-        }
-
-        /* =========================
-           UPLOAD
-        ========================= */
-
-        .upload-card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 16px;
-            padding: 45px;
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .upload-icon {
-            width: 58px;
-            height: 58px;
-            border: 1px solid #222;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 25px;
-        }
-
-        .upload-card h2 {
-            font-size: 23px;
-            margin-bottom: 8px;
-        }
-
-        .upload-card p {
-            color: #777;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .choose-btn {
-            display: inline-block;
-            background: #111;
-            color: white;
-            padding: 12px 22px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .choose-btn:hover {
-            background: #333;
-        }
-
-        .file-name {
-            margin-top: 15px;
-            font-size: 13px;
-            color: #555;
-        }
-
-        .upload-btn {
-            margin-top: 18px;
-            background: white;
-            color: #111;
-            border: 1px solid #111;
-            padding: 11px 22px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .upload-btn:hover {
-            background: #111;
-            color: white;
-        }
-
-        /* =========================
-           ACTION CARDS
-        ========================= */
-
-        .actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .action-card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 14px;
-            padding: 28px;
-        }
-
-        .action-icon {
-            font-size: 25px;
-            margin-bottom: 15px;
-        }
-
-        .action-card h3 {
-            font-size: 19px;
-            margin-bottom: 8px;
-        }
-
-        .action-card p {
-            color: #777;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        /* =========================
-           BUTTONS
-        ========================= */
-
-        button {
-            font-family: inherit;
-        }
-
-        .primary-btn {
-            width: 100%;
-            background: #111;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .primary-btn:hover {
-            background: #333;
-        }
-
-        /* =========================
-           QUIZ CONTROLS
-        ========================= */
-
-        .quiz-control {
-            margin-bottom: 18px;
-        }
-
-        .quiz-control label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .quiz-select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background: white;
-            font-size: 14px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .quiz-select:focus {
-            border-color: #111;
-        }
-
-        /* =========================
-           ASK AI
-        ========================= */
-
-        .chat-section {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            margin-bottom: 20px;
-        }
-
-        .section-title h2 {
-            font-size: 22px;
-            margin-bottom: 5px;
-        }
-
-        .section-title p {
-            color: #777;
-            font-size: 14px;
-        }
-
-        .chat-form {
-            display: flex;
-            gap: 10px;
-        }
-
-        .chat-input {
-            flex: 1;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 13px 15px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .chat-input:focus {
-            border-color: #111;
-        }
-
-        .ask-btn {
-            background: #111;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0 25px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .ask-btn:hover {
-            background: #333;
-        }
-
-        /* =========================
-           ANSWER
-        ========================= */
-
-        .answer-box {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f7f7f7;
-            border-radius: 10px;
-            border-left: 3px solid #111;
-            line-height: 1.6;
-            font-size: 15px;
-        }
-
-        .answer-content {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        /* =========================
-           FEEDBACK
-        ========================= */
-
-        .feedback-section {
-            margin-top: 18px;
-            padding-top: 16px;
-            border-top: 1px solid #ddd;
-        }
-
-        .feedback-question {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .feedback-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .feedback-btn {
-            background: white;
-            color: #333;
-            border: 1px solid #ccc;
-            border-radius: 7px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: 0.15s;
-        }
-
-        .feedback-btn:hover {
-            border-color: #111;
-            background: #f1f1f1;
-        }
-
-        .feedback-btn.selected {
-            background: #111;
-            color: white;
-            border-color: #111;
-        }
-
-        .feedback-message {
-            margin-top: 10px;
-            font-size: 13px;
-            color: #555;
-            display: none;
-        }
-
-        .report-box {
-            display: none;
-            margin-top: 12px;
-        }
-
-        .report-input {
-            width: 100%;
-            min-height: 80px;
-            resize: vertical;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            font-family: inherit;
-            font-size: 13px;
-            outline: none;
-        }
-
-        .report-input:focus {
-            border-color: #111;
-        }
-
-        .report-submit {
-            margin-top: 8px;
-            background: #111;
-            color: white;
-            border: none;
-            border-radius: 7px;
-            padding: 8px 13px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .report-submit:hover {
-            background: #333;
-        }
-
-        /* =========================
-           BETA FEEDBACK BUTTON
-        ========================= */
-
-        .beta-feedback-section {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .beta-feedback-section h3 {
-            font-size: 18px;
-            margin-bottom: 7px;
-        }
-
-        .beta-feedback-section p {
-            color: #777;
-            font-size: 13px;
-            margin-bottom: 17px;
-        }
-
-        .beta-feedback-btn {
-            display: inline-block;
-            background: #111;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            padding: 11px 20px;
-            font-size: 14px;
-            font-weight: 600;
-            transition: 0.15s;
-        }
-
-        .beta-feedback-btn:hover {
-            background: #333;
-        }
-
-        /* =========================
-           QUIZ
-        ========================= */
-
-        .quiz-section {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-
-        .question-card {
-            background: #f7f7f7;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
-        }
-
-        .question-number {
-            font-size: 13px;
-            color: #777;
-            margin-bottom: 8px;
-        }
-
-        .question-text {
-            font-size: 18px;
-            font-weight: 600;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
-        .option {
-            display: block;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 13px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-
-        .option:hover {
-            border-color: #111;
-        }
-
-        .option.selected {
-            border-color: #111;
-            background: #eeeeee;
-        }
-
-        .option input {
-            margin-right: 10px;
-        }
-
-        .submit-quiz {
-            width: 100%;
-            background: #111;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 14px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .submit-quiz:hover {
-            background: #333;
-        }
-
-        /* =========================
-           SCORE
-        ========================= */
-
-        .score-box {
-            text-align: center;
-            background: #111;
-            color: white;
-            padding: 30px;
-            border-radius: 14px;
-            margin-bottom: 25px;
-        }
-
-        .score-label {
-            font-size: 15px;
-            opacity: 0.8;
-        }
-
-        .score-number {
-            font-size: 42px;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-
-        .score-percentage {
-            font-size: 18px;
-        }
-
-        /* =========================
-           RESULTS
-        ========================= */
-
-        .result-card {
-            background: #f7f7f7;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 4px solid #777;
-        }
-
-        .result-card.correct {
-            border-left-color: #222;
-        }
-
-        .result-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .result-answer {
-            margin-top: 8px;
-            line-height: 1.5;
-        }
-
-        .explanation {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #ddd;
-            color: #555;
-            line-height: 1.5;
-        }
-
-        /* =========================
-           FOOTER
-        ========================= */
-
-        footer {
-            text-align: center;
-            color: #888;
-            font-size: 13px;
-            padding: 30px 0;
-        }
-
-        /* =========================
-           MOBILE
-        ========================= */
-
-        @media (max-width: 700px) {
-
-            .container {
-                width: 92%;
-                padding: 35px 0;
-            }
-
-            .navbar {
-                padding: 0 4%;
-            }
-
-            .logo img {
-                height: 45px;
-            }
-
-            .status {
-                font-size: 11px;
-            }
-
-            .hero h1 {
-                font-size: 32px;
-            }
-
-            .actions {
-                grid-template-columns: 1fr;
-            }
-
-            .upload-card {
-                padding: 30px 20px;
-            }
-
-            .chat-form {
-                flex-direction: column;
-            }
-
-            .ask-btn {
-                padding: 12px;
-            }
-
-            .feedback-buttons {
-                flex-direction: column;
-            }
-
-            .feedback-btn {
-                width: 100%;
-            }
-
-            .beta-feedback-btn {
-                width: 100%;
-            }
-        }
-
-    </style>
 </head>
 
 <body>
 
-<!-- =========================
-     NAVBAR
-========================= -->
+<div class="app-layout">
 
-<nav class="navbar">
+    <!-- SIDEBAR -->
 
-    <div class="logo">
+    <aside class="sidebar" id="sidebar">
 
-        <img
-            src="{{ url_for('static', filename='Gemini_Generated_Image_fiyjhsfiyjhsfiyj.jfif') }}"
-            alt="StudyMate AI logo"
-        >
+        <a href="/" class="brand">
 
-    </div>
-
-    <div class="status">
-
-        <div class="status-dot"></div>
-
-        AI Study Assistant
-
-    </div>
-
-</nav>
-
-
-<!-- =========================
-     MAIN
-========================= -->
-
-<main class="container">
-
-    <!-- HERO -->
-
-    <section class="hero">
-
-        <h1>
-            Study smarter with StudyMate AI.
-        </h1>
-
-        <p>
-            Upload your notes, ask questions, and test yourself with an AI study assistant.
-        </p>
-
-        <div class="beta-badge">
-            <span class="beta-dot"></span>
-            Student Beta
-        </div>
-
-        <p class="beta-note">
-            You're testing an early version of StudyMate AI. Your feedback helps improve it.
-        </p>
-
-    </section>
-
-
-    <!-- ALERT -->
-
-    {% if error %}
-
-        <div class="alert">
-            ❌ {{ error }}
-        </div>
-
-    {% endif %}
-
-
-    {% if success %}
-
-        <div class="alert">
-            ✓ {{ success }}
-        </div>
-
-    {% endif %}
-
-
-    <!-- =========================
-         UPLOAD
-    ========================= -->
-
-    <section class="upload-card">
-
-        <div class="upload-icon">
-            ↑
-        </div>
-
-        <h2>
-            Upload your study material
-        </h2>
-
-        <p>
-            Upload your notes and StudyMate will become your personal AI tutor.
-        </p>
-
-        <form
-            action="/upload"
-            method="POST"
-            enctype="multipart/form-data"
-        >
-
-            <label class="choose-btn">
-
-                Choose PDF
-
-                <input
-                    class="file-input"
-                    type="file"
-                    name="pdf"
-                    accept=".pdf"
-                    required
-                    onchange="showFileName(this)"
-                >
-
-            </label>
-
-            <div
-                id="file-name"
-                class="file-name"
-            ></div>
-
-            <button
-                class="upload-btn"
-                type="submit"
-            >
-                Upload Material
-            </button>
-
-        </form>
-
-
-        {% if filename %}
-
-            <div class="file-name">
-
-                ✓ Currently loaded:
-                <strong>{{ filename }}</strong>
-
+            <div class="brand-icon">
+                <i class="fa-solid fa-graduation-cap"></i>
             </div>
 
-        {% endif %}
+            <span>StudyMate<span class="brand-ai"> AI</span></span>
 
-    </section>
-
-
-    <!-- =========================
-         ACTION CARDS
-    ========================= -->
-
-    <section class="actions">
-
-        <!-- QUIZ -->
-
-        <div class="action-card">
-
-            <div class="action-icon">
-                ✦
-            </div>
-
-            <h3>
-                AI Quiz Generator
-            </h3>
-
-            <p>
-                Create a custom quiz from your uploaded study material.
-            </p>
-
-            <form
-                action="/quiz"
-                method="POST"
-            >
-
-                <div class="quiz-control">
-
-                    <label for="num_questions">
-                        Number of questions
-                    </label>
-
-                    <select
-                        id="num_questions"
-                        name="num_questions"
-                        class="quiz-select"
-                    >
-
-                        <option value="5">
-                            5 questions
-                        </option>
-
-                        <option value="10">
-                            10 questions
-                        </option>
-
-                        <option value="15">
-                            15 questions
-                        </option>
-
-                        <option value="20">
-                            20 questions
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="quiz-control">
-
-                    <label for="difficulty">
-                        Difficulty
-                    </label>
-
-                    <select
-                        id="difficulty"
-                        name="difficulty"
-                        class="quiz-select"
-                    >
-
-                        <option value="easy">
-                            Easy
-                        </option>
-
-                        <option value="medium" selected>
-                            Medium
-                        </option>
-
-                        <option value="hard">
-                            Hard
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <button
-                    class="primary-btn"
-                    type="submit"
-                >
-                    Generate Quiz →
-                </button>
-
-            </form>
-
-        </div>
-
-
-        <!-- ASK AI -->
-
-        <div class="action-card">
-
-            <div class="action-icon">
-                ?
-            </div>
-
-            <h3>
-                Ask StudyMate AI
-            </h3>
-
-            <p>
-                Ask questions about your uploaded study material and get clear explanations.
-            </p>
-
-            <button
-                class="primary-btn"
-                onclick="document.getElementById('question').focus()"
-            >
-                Ask a Question →
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         ASK AI
-    ========================= -->
-
-    <section class="chat-section">
-
-        <div class="section-title">
-
-            <h2>
-                Ask StudyMate AI
-            </h2>
-
-            <p>
-                Ask anything about your uploaded study material.
-            </p>
-
-        </div>
-
-
-        <form
-            class="chat-form"
-            action="/ask"
-            method="POST"
-        >
-
-            <input
-                id="question"
-                class="chat-input"
-                type="text"
-                name="question"
-                placeholder="e.g. Explain photosynthesis"
-                required
-            >
-
-            <button
-                class="ask-btn"
-                type="submit"
-            >
-                Ask AI
-            </button>
-
-        </form>
-
-
-        {% if answer %}
-
-            <div class="answer-box">
-
-                <strong>StudyMate:</strong>
-
-                <br><br>
-
-                <div class="answer-content">
-                    {{ answer }}
-                </div>
-
-
-                <!-- =========================
-                     ANSWER FEEDBACK
-                ========================= -->
-
-                <div class="feedback-section">
-
-                    <div class="feedback-question">
-                        Was this answer helpful?
-                    </div>
-
-                    <div class="feedback-buttons">
-
-                        <button
-                            type="button"
-                            class="feedback-btn"
-                            onclick="sendFeedback('helpful', this)"
-                        >
-                            👍 Helpful
-                        </button>
-
-                        <button
-                            type="button"
-                            class="feedback-btn"
-                            onclick="sendFeedback('incorrect', this)"
-                        >
-                            👎 Incorrect
-                        </button>
-
-                        <button
-                            type="button"
-                            class="feedback-btn"
-                            onclick="showReportBox()"
-                        >
-                            🚩 Report a problem
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        id="feedback-message"
-                        class="feedback-message"
-                    ></div>
-
-
-                    <div
-                        id="report-box"
-                        class="report-box"
-                    >
-
-                        <textarea
-                            id="report-input"
-                            class="report-input"
-                            placeholder="Tell us what went wrong..."
-                        ></textarea>
-
-                        <button
-                            type="button"
-                            class="report-submit"
-                            onclick="sendReport()"
-                        >
-                            Send Report
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        {% endif %}
-
-    </section>
-
-
-    <!-- =========================
-         BETA FEEDBACK
-    ========================= -->
-
-    <section class="beta-feedback-section">
-
-        <h3>
-            Help improve StudyMate AI
-        </h3>
-
-        <p>
-            Finished testing? Share your experience through the short beta feedback form.
-        </p>
-
-        <a
-            class="beta-feedback-btn"
-            href="https://docs.google.com/forms/d/10ueaxGmKfdtY13Scai-5SnJjstYABZxAuS6C1cVB2J0/viewform"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            Give Beta Feedback →
         </a>
 
-    </section>
+        <div class="sidebar-label">WORKSPACE</div>
 
+        <nav class="sidebar-nav">
 
-    <!-- =========================
-         INTERACTIVE QUIZ
-    ========================= -->
+            <a href="#dashboard" class="nav-item active">
+                <i class="fa-solid fa-grid-2"></i>
+                <span>Dashboard</span>
+            </a>
 
-    {% if quiz %}
+            <a href="#ai-tutor" class="nav-item">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>AI Tutor</span>
+            </a>
 
-        <section class="quiz-section">
+            <a href="#documents" class="nav-item">
+                <i class="fa-regular fa-folder-open"></i>
+                <span>My Documents</span>
+            </a>
 
-            <div class="section-title">
+            <a href="#flashcards" class="nav-item">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Flashcards</span>
+                <span class="nav-badge">NEW</span>
+            </a>
 
-                <h2>
-                    🧠 Your AI Quiz
-                </h2>
+            <a href="#quiz" class="nav-item">
+                <i class="fa-regular fa-clipboard"></i>
+                <span>Quiz Generator</span>
+            </a>
+
+            <a href="#study-tools" class="nav-item">
+                <i class="fa-regular fa-lightbulb"></i>
+                <span>Study Tools</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="beta-card">
+                <div class="beta-card-icon">
+                    <i class="fa-solid fa-flask"></i>
+                </div>
+
+                <strong>Student Beta</strong>
 
                 <p>
-                    Choose one answer for every question.
+                    Help us build a better learning experience.
                 </p>
 
+                <a href="https://docs.google.com/forms/d/10ueaxGmKfdtY13Scai-5SnJjstYABZxAuS6C1cVB2J0/viewform"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Share feedback
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
             </div>
 
+            <a href="/about" class="nav-item">
+                <i class="fa-regular fa-circle-question"></i>
+                <span>About StudyMate</span>
+            </a>
 
-            <form
-                action="/submit_quiz"
-                method="POST"
-            >
+        </div>
 
-                {% for question in quiz %}
-
-                    <div class="question-card">
-
-                        <div class="question-number">
-
-                            Question {{ loop.index }}
-                            of {{ quiz|length }}
-
-                        </div>
-
-                        <div class="question-text">
-
-                            {{ question.question }}
-
-                        </div>
+    </aside>
 
 
-                        {% for option in question.options %}
+    <!-- MAIN APPLICATION -->
 
-                            <label class="option">
+    <main class="main-content" id="dashboard">
 
-                                <input
-                                    type="radio"
-                                    name="question_{{ loop.index0 }}"
-                                    value="{{ loop.index0 }}"
-                                    required
-                                >
+        <!-- TOP NAVIGATION -->
 
-                                {{ option }}
+        <header class="topbar">
 
-                            </label>
+            <button class="mobile-menu"
+                    id="mobile-menu"
+                    type="button"
+                    aria-label="Open navigation">
+                <i class="fa-solid fa-bars"></i>
+            </button>
 
-                        {% endfor %}
+            <div class="breadcrumb">
+                <span>Workspace</span>
+                <i class="fa-solid fa-chevron-right"></i>
+                <strong>Dashboard</strong>
+            </div>
 
-                    </div>
+            <div class="topbar-actions">
 
-                {% endfor %}
+                <div class="system-status">
+                    <span class="status-indicator"></span>
+                    AI Assistant
+                </div>
 
-
-                <button
-                    class="submit-quiz"
-                    type="submit"
-                >
-
-                    Submit Quiz →
-
+                <button class="theme-toggle"
+                        id="theme-toggle"
+                        type="button"
+                        aria-label="Toggle appearance">
+                    <i class="fa-regular fa-moon"></i>
                 </button>
 
-            </form>
-
-        </section>
-
-    {% endif %}
-
-
-    <!-- =========================
-         RESULTS
-    ========================= -->
-
-    {% if results %}
-
-        <section class="quiz-section">
-
-            <div class="score-box">
-
-                <div class="score-label">
-                    Your Score
-                </div>
-
-                <div class="score-number">
-                    {{ score }}/{{ total }}
-                </div>
-
-                <div class="score-percentage">
-                    {{ percentage }}%
+                <div class="user-avatar" title="Student">
+                    S
                 </div>
 
             </div>
 
+        </header>
 
-            <div class="section-title">
 
-                <h2>
-                    Quiz Review
-                </h2>
+        <!-- PAGE CONTENT -->
 
-                <p>
-                    Review your answers and learn from your mistakes.
-                </p>
+        <div class="page-container">
 
+            <!-- HERO -->
+
+            <section class="welcome-section">
+
+                <div class="welcome-content">
+
+                    <div class="eyebrow">
+                        <i class="fa-solid fa-sparkles"></i>
+                        YOUR PERSONAL AI LEARNING SPACE
+                    </div>
+
+                    <h1>
+                        Learn smarter.<br>
+                        <span>Achieve more.</span>
+                    </h1>
+
+                    <p>
+                        Your study materials, AI tutor and learning tools,
+                        all in one place. What are we learning today?
+                    </p>
+
+                    <div class="welcome-meta">
+                        <span class="beta-pill">
+                            <span></span>
+                            Student Beta
+                        </span>
+
+                        <span class="welcome-meta-text">
+                            Built for curious minds.
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="welcome-decoration">
+                    <div class="decoration-circle circle-one"></div>
+                    <div class="decoration-circle circle-two"></div>
+
+                    <div class="decoration-icon">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+
+                    <div class="floating-icon floating-one">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+
+                    <div class="floating-icon floating-two">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+
+                    <div class="floating-icon floating-three">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- ALERT MESSAGES -->
+
+            {% if error %}
+            <div class="alert alert-error">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>{{ error }}</span>
             </div>
+            {% endif %}
+
+            {% if success %}
+            <div class="alert alert-success">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>{{ success }}</span>
+            </div>
+            {% endif %}
 
 
-            {% for result in results %}
+            <!-- QUICK ACTIONS -->
 
-                <div
-                    class="result-card
-                    {% if result.is_correct %}
-                        correct
-                    {% endif %}"
-                >
+            <section class="quick-actions">
 
-                    <div class="result-title">
+                <div class="section-heading">
+                    <div>
+                        <h2>Quick actions</h2>
+                        <p>Choose how you want to study.</p>
+                    </div>
+                </div>
 
-                        Question {{ loop.index }}
+                <div class="action-grid">
 
-                        {% if result.is_correct %}
-                            ✓ Correct
-                        {% else %}
-                            ✗ Incorrect
+                    <a href="#documents" class="action-card upload-action">
+                        <div class="action-icon blue-icon">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+
+                        <div class="action-card-content">
+                            <h3>Upload Material</h3>
+                            <p>Start with your PDF documents.</p>
+                        </div>
+
+                        <i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i>
+                    </a>
+
+                    <a href="#ai-tutor" class="action-card">
+                        <div class="action-icon purple-icon">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+
+                        <div class="action-card-content">
+                            <h3>Ask AI Tutor</h3>
+                            <p>Understand difficult concepts.</p>
+                        </div>
+
+                        <i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i>
+                    </a>
+
+                    <a href="#flashcards" class="action-card">
+                        <div class="action-icon orange-icon">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+
+                        <div class="action-card-content">
+                            <h3>Flashcards</h3>
+                            <p>Remember important concepts.</p>
+                        </div>
+
+                        <span class="new-label">NEW</span>
+                    </a>
+
+                    <a href="#quiz" class="action-card">
+                        <div class="action-icon green-icon">
+                            <i class="fa-solid fa-clipboard-question"></i>
+                        </div>
+
+                        <div class="action-card-content">
+                            <h3>Generate Quiz</h3>
+                            <p>Test your understanding.</p>
+                        </div>
+
+                        <i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i>
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <!-- DOCUMENT UPLOAD -->
+
+            <section class="content-section" id="documents">
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Your study materials</h2>
+                        <p>Upload a document to begin your learning session.</p>
+                    </div>
+                </div>
+
+                <div class="upload-panel">
+
+                    <div class="upload-illustration">
+                        <div class="upload-illustration-icon">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </div>
+                    </div>
+
+                    <div class="upload-content">
+
+                        <h3>Bring your notes to life.</h3>
+
+                        <p>
+                            Upload a PDF and let StudyMate help you understand,
+                            summarize and practice your study material.
+                        </p>
+
+                        <form action="/upload"
+                              method="POST"
+                              enctype="multipart/form-data"
+                              id="upload-form">
+
+                            <label class="file-picker" for="pdf-file">
+                                <i class="fa-solid fa-folder-open"></i>
+                                Choose PDF
+                            </label>
+
+                            <input type="file"
+                                   name="pdf"
+                                   id="pdf-file"
+                                   class="file-input"
+                                   accept=".pdf,application/pdf"
+                                   required>
+
+                            <div class="selected-file"
+                                 id="file-name">
+                                No file selected
+                            </div>
+
+                            <button type="submit" class="primary-button upload-button">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                Upload Material
+                            </button>
+
+                        </form>
+
+                        <div class="upload-hint">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            PDF files only · Maximum size 20 MB
+                        </div>
+
+                        {% if filename %}
+                        <div class="loaded-document">
+                            <i class="fa-solid fa-circle-check"></i>
+                            Currently loaded:
+                            <strong>{{ filename }}</strong>
+                        </div>
                         {% endif %}
 
                     </div>
 
+                </div>
 
+            </section>
+
+
+            <!-- AI TUTOR -->
+
+            <section class="content-section" id="ai-tutor">
+
+                <div class="section-heading">
                     <div>
-                        {{ result.question }}
+                        <h2>Your AI study companion</h2>
+                        <p>Ask questions and understand your study material.</p>
                     </div>
 
+                    <span class="powered-label">
+                        <i class="fa-solid fa-sparkles"></i>
+                        Powered by AI
+                    </span>
+                </div>
 
-                    {% if result.selected >= 0 %}
+                <div class="chat-panel">
 
-                        <div class="result-answer">
+                    <div class="chat-header">
 
-                            <strong>
-                                Your answer:
-                            </strong>
+                        <div class="chat-avatar">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
 
-                            {{ result.options[result.selected] }}
+                        <div>
+                            <strong>StudyMate Tutor</strong>
+                            <span>
+                                <span class="status-indicator"></span>
+                                Ready to help
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="chat-intro">
+
+                        <div class="chat-intro-icon">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+
+                        <h3>What would you like to understand?</h3>
+
+                        <p>
+                            Ask a question about your uploaded study material.
+                            Your AI tutor will help break down difficult topics.
+                        </p>
+
+                    </div>
+
+                    {% if answer %}
+                    <div class="answer-box">
+
+                        <div class="answer-heading">
+                            <div class="chat-avatar small-avatar">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+
+                            <strong>StudyMate's answer</strong>
+                        </div>
+
+                        <div class="answer-content">
+                            {{ answer }}
+                        </div>
+
+                        <div class="feedback-section">
+
+                            <p>Was this answer helpful?</p>
+
+                            <div class="feedback-buttons">
+
+                                <button type="button"
+                                        class="feedback-btn"
+                                        onclick="sendFeedback('helpful', this)">
+                                    <i class="fa-regular fa-thumbs-up"></i>
+                                    Helpful
+                                </button>
+
+                                <button type="button"
+                                        class="feedback-btn"
+                                        onclick="sendFeedback('incorrect', this)">
+                                    <i class="fa-regular fa-thumbs-down"></i>
+                                    Incorrect
+                                </button>
+
+                                <button type="button"
+                                        class="feedback-btn"
+                                        onclick="showReportBox()">
+                                    <i class="fa-regular fa-flag"></i>
+                                    Report a problem
+                                </button>
+
+                            </div>
+
+                            <div id="feedback-message"
+                                 class="feedback-message"></div>
+
+                            <div id="report-box" class="report-box">
+
+                                <textarea id="report-input"
+                                          placeholder="Tell us what went wrong..."></textarea>
+
+                                <button type="button"
+                                        class="primary-button"
+                                        onclick="sendReport()">
+                                    Send report
+                                </button>
+
+                            </div>
 
                         </div>
 
-                    {% else %}
-
-                        <div class="result-answer">
-
-                            <strong>
-                                Your answer:
-                            </strong>
-
-                            Not answered
-
-                        </div>
-
+                    </div>
                     {% endif %}
 
+                    <form action="/ask"
+                          method="POST"
+                          class="chat-form"
+                          id="chat-form">
 
-                    <div class="result-answer">
+                        <input type="text"
+                               name="question"
+                               id="question"
+                               placeholder="Ask anything about your study material..."
+                               autocomplete="off"
+                               required>
 
-                        <strong>
-                            Correct answer:
-                        </strong>
+                        <button type="submit" class="send-button">
+                            <span>Ask AI</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
 
-                        {{ result.options[result.correct] }}
+                    </form>
+
+                    <div class="chat-disclaimer">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Upload a PDF first so your tutor can answer from your material.
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- STUDY TOOLS -->
+
+            <section class="content-section" id="study-tools">
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Your learning toolkit</h2>
+                        <p>More ways to understand and remember what you learn.</p>
+                    </div>
+                </div>
+
+                <div class="tools-grid">
+
+                    <!-- FLASHCARDS -->
+
+                    <div class="tool-card" id="flashcards">
+
+                        <div class="tool-top">
+                            <div class="action-icon purple-icon">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+
+                            <span class="new-label">COMING SOON</span>
+                        </div>
+
+                        <h3>AI Flashcards</h3>
+
+                        <p>
+                            Turn your uploaded study material into
+                            question-and-answer cards for revision.
+                        </p>
+
+                        <div class="tool-footer">
+                            <span>Active recall</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
 
                     </div>
 
 
-                    <div class="explanation">
+                    <!-- QUIZ -->
 
-                        <strong>
-                            Explanation:
-                        </strong>
+                    <div class="tool-card" id="quiz">
 
-                        {{ result.explanation }}
+                        <div class="tool-top">
+                            <div class="action-icon green-icon">
+                                <i class="fa-solid fa-clipboard-question"></i>
+                            </div>
+
+                            <span class="available-label">AVAILABLE</span>
+                        </div>
+
+                        <h3>AI Quiz Generator</h3>
+
+                        <p>
+                            Create multiple-choice questions
+                            based on your uploaded study material.
+                        </p>
+
+                        <form action="/quiz" method="POST">
+
+                            <div class="form-field">
+                                <label for="num_questions">
+                                    Number of questions
+                                </label>
+
+                                <select name="num_questions"
+                                        id="num_questions">
+                                    <option value="5">5 questions</option>
+                                    <option value="10">10 questions</option>
+                                    <option value="15">15 questions</option>
+                                    <option value="20">20 questions</option>
+                                </select>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="difficulty">
+                                    Difficulty
+                                </label>
+
+                                <select name="difficulty"
+                                        id="difficulty">
+                                    <option value="easy">Easy</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="hard">Hard</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="primary-button">
+                                Generate quiz
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    <!-- NOTES -->
+
+                    <div class="tool-card">
+
+                        <div class="tool-top">
+                            <div class="action-icon orange-icon">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+
+                            <span class="new-label">COMING SOON</span>
+                        </div>
+
+                        <h3>AI Study Notes</h3>
+
+                        <p>
+                            Generate organized revision notes
+                            and key concepts from your documents.
+                        </p>
+
+                        <div class="tool-footer">
+                            <span>Smart revision</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+
+                    </div>
+
+
+                    <!-- SUMMARY -->
+
+                    <div class="tool-card">
+
+                        <div class="tool-top">
+                            <div class="action-icon blue-icon">
+                                <i class="fa-solid fa-file-lines"></i>
+                            </div>
+
+                            <span class="new-label">COMING SOON</span>
+                        </div>
+
+                        <h3>AI Summaries</h3>
+
+                        <p>
+                            Understand long documents faster
+                            with concise summaries.
+                        </p>
+
+                        <div class="tool-footer">
+                            <span>Quick understanding</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
 
                     </div>
 
                 </div>
 
-            {% endfor %}
+            </section>
 
-        </section>
 
-    {% endif %}
+            <!-- QUIZ RESULTS -->
 
-</main>
+            {% if quiz %}
 
+            <section class="content-section quiz-results-section">
 
-<!-- =========================
-     FOOTER
-========================= -->
+                <div class="section-heading">
+                    <div>
+                        <h2>Your generated quiz</h2>
+                        <p>Take your time and select one answer per question.</p>
+                    </div>
+                </div>
 
-<footer>
+                <form action="/submit_quiz" method="POST" id="quiz-form">
 
-    StudyMate AI · Built for smarter studying
+                    {% for question in quiz %}
 
-    <br><br>
+                    <div class="question-card">
 
-    <span style="color: #555;">
-        Created by Sakshyam Niraula
-    </span>
+                        <div class="question-number">
+                            QUESTION {{ loop.index }} OF {{ quiz|length }}
+                        </div>
 
-</footer>
+                        <h3>{{ question.question }}</h3>
 
+                        <div class="question-options">
 
-<script>
+                            {% for option in question.options %}
 
-    /* =========================
-       FILE NAME
-    ========================= */
+                            <label class="option">
 
-    function showFileName(input) {
+                                <input type="radio"
+                                       name="question_{{ loop.index0 }}"
+                                       value="{{ loop.index0 }}"
+                                       required>
 
-        const fileName =
-            document.getElementById("file-name");
+                                <span>{{ option }}</span>
 
-        if (input.files.length > 0) {
+                            </label>
 
-            fileName.textContent =
-                "Selected: " +
-                input.files[0].name;
+                            {% endfor %}
 
-        }
+                        </div>
 
-    }
+                    </div>
 
+                    {% endfor %}
 
-    /* =========================
-       CLEAN AI CODE FENCES
-    ========================= */
+                    <button type="submit" class="primary-button submit-quiz">
+                        Submit answers
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
 
-    document.addEventListener("DOMContentLoaded", function () {
+                </form>
 
-        const answer =
-            document.querySelector(".answer-content");
+            </section>
 
-        if (answer) {
+            {% endif %}
 
-            let text = answer.textContent;
 
-            /*
-             * Removes Markdown code fences such as:
-             *
-             * ```python
-             * code
-             * ```
-             *
-             * while keeping the actual content.
-             */
+            <!-- QUIZ REVIEW -->
 
-            text = text.replace(
-                /```[a-zA-Z0-9_+-]*\s*/g,
-                ""
-            );
+            {% if results %}
 
-            text = text.replace(
-                /```/g,
-                ""
-            );
+            <section class="content-section quiz-results-section">
 
-            answer.textContent = text.trim();
+                <div class="score-panel">
 
-        }
+                    <div class="score-icon">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
 
+                    <p>Your quiz result</p>
 
-        /* =========================
-           SINGLE-SELECT MCQs
-        ========================= */
+                    <h2>{{ score }} / {{ total }}</h2>
 
-        const options =
-            document.querySelectorAll(".option");
+                    <div class="score-percentage">
+                        {{ percentage }}% score
+                    </div>
 
-        options.forEach(function (option) {
+                </div>
 
-            const radio =
-                option.querySelector("input[type='radio']");
+                <div class="section-heading">
+                    <div>
+                        <h2>Review your answers</h2>
+                        <p>Learn from every question.</p>
+                    </div>
+                </div>
 
-            if (!radio) {
-                return;
-            }
+                {% for result in results %}
 
-            radio.addEventListener("change", function () {
+                <div class="result-card {% if result.is_correct %}correct{% endif %}">
 
-                /*
-                 * Remove selected styling from
-                 * every option in this question.
-                 */
+                    <div class="result-title">
+                        Question {{ loop.index }}
 
-                const questionCard =
-                    option.closest(".question-card");
+                        {% if result.is_correct %}
+                            <span>Correct</span>
+                        {% else %}
+                            <span>Incorrect</span>
+                        {% endif %}
+                    </div>
 
-                questionCard
-                    .querySelectorAll(".option")
-                    .forEach(function (item) {
-                        item.classList.remove("selected");
-                    });
+                    <p>{{ result.question }}</p>
 
+                    <p class="result-answer">
+                        <strong>Your answer:</strong>
 
-                /*
-                 * Highlight only the selected option.
-                 */
+                        {% if result.selected >= 0 %}
+                            {{ result.options[result.selected] }}
+                        {% else %}
+                            Not answered
+                        {% endif %}
+                    </p>
 
-                option.classList.add("selected");
+                    <p class="result-answer">
+                        <strong>Correct answer:</strong>
+                        {{ result.options[result.correct] }}
+                    </p>
 
-            });
+                    <div class="explanation">
+                        <strong>Explanation</strong>
+                        <p>{{ result.explanation }}</p>
+                    </div>
 
-        });
+                </div>
 
-    });
+                {% endfor %}
 
+            </section>
 
-    /* =========================
-       FEEDBACK
-    ========================= */
+            {% endif %}
 
-    async function sendFeedback(type, button) {
 
-        const message =
-            document.getElementById("feedback-message");
+            <!-- FOOTER -->
 
-        const buttons =
-            document.querySelectorAll(".feedback-btn");
+            <footer class="app-footer">
 
-        buttons.forEach(function (btn) {
-            btn.classList.remove("selected");
-        });
+                <div class="footer-brand">
+                    <div class="brand-icon small-brand-icon">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
 
-        button.classList.add("selected");
+                    <strong>StudyMate AI</strong>
+                </div>
 
-        try {
+                <p>
+                    Built for smarter studying.
+                    Created by Sakshyam Niraula.
+                </p>
 
-            const response = await fetch("/feedback", {
+                <div class="footer-links">
+                    <a href="/about">About</a>
+                    <a href="/how-it-works">How it works</a>
+                    <a href="/ai-study-assistant">AI Study Assistant</a>
+                    <a href="/ai-quiz-generator">Quiz Generator</a>
+                </div>
 
-                method: "POST",
+                <span class="copyright">
+                    © 2026 StudyMate AI. All rights reserved.
+                </span>
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+            </footer>
 
-                body: JSON.stringify({
-                    feedback: type
-                })
+        </div>
 
-            });
+    </main>
 
+</div>
 
-            if (response.ok) {
 
-                message.textContent =
-                    "Thanks! Your feedback helps improve StudyMate AI.";
-
-                message.style.display = "block";
-
-            } else {
-
-                message.textContent =
-                    "We couldn't save your feedback. Please try again.";
-
-                message.style.display = "block";
-
-            }
-
-        } catch (error) {
-
-            message.textContent =
-                "Something went wrong while sending your feedback.";
-
-            message.style.display = "block";
-
-        }
-
-    }
-
-
-    /* =========================
-       REPORT BOX
-    ========================= */
-
-    function showReportBox() {
-
-        const reportBox =
-            document.getElementById("report-box");
-
-        reportBox.style.display = "block";
-
-        document
-            .getElementById("report-input")
-            .focus();
-
-    }
-
-
-    /* =========================
-       SEND REPORT
-    ========================= */
-
-    async function sendReport() {
-
-        const input =
-            document.getElementById("report-input");
-
-        const message =
-            document.getElementById("feedback-message");
-
-        const report =
-            input.value.trim();
-
-
-        if (!report) {
-
-            message.textContent =
-                "Please describe the problem before sending the report.";
-
-            message.style.display = "block";
-
-            return;
-
-        }
-
-
-        try {
-
-            const response = await fetch("/feedback", {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    feedback: "report",
-                    message: report
-                })
-
-            });
-
-
-            if (response.ok) {
-
-                message.textContent =
-                    "Report received. Thanks for helping improve StudyMate AI.";
-
-                message.style.display = "block";
-
-                input.value = "";
-
-                document
-                    .getElementById("report-box")
-                    .style.display = "none";
-
-            } else {
-
-                message.textContent =
-                    "We couldn't send the report. Please try again.";
-
-                message.style.display = "block";
-
-            }
-
-        } catch (error) {
-
-            message.textContent =
-                "Something went wrong while sending the report.";
-
-            message.style.display = "block";
-
-        }
-
-    }
-
-</script>
+<!-- JAVASCRIPT -->
+<script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
 
 </body>
 </html>
