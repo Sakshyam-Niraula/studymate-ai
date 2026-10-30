@@ -1,87 +1,74 @@
-
 document.addEventListener("DOMContentLoaded", () => {
     const root = document.documentElement;
 
-    // ----------------------------------
-    // Theme: light / dark
-    // ----------------------------------
-    const themeToggle = document.getElementById("themeToggle");
+    // Theme toggle
+    const themeToggle = document.getElementById("theme-toggle");
     const savedTheme = localStorage.getItem("studymate-theme");
 
-    if (savedTheme) {
+    if (savedTheme === "light" || savedTheme === "dark") {
         root.setAttribute("data-theme", savedTheme);
     }
 
     function updateThemeButton() {
         if (!themeToggle) return;
-
-        const dark = root.getAttribute("data-theme") === "dark";
-        themeToggle.textContent = dark ? "☀️" : "🌙";
+        const isDark = root.getAttribute("data-theme") === "dark";
+        themeToggle.innerHTML = isDark
+            ? '<i class="fa-regular fa-sun" aria-hidden="true"></i>'
+            : '<i class="fa-regular fa-moon" aria-hidden="true"></i>';
         themeToggle.setAttribute(
             "aria-label",
-            dark ? "Switch to light mode" : "Switch to dark mode"
+            isDark ? "Switch to light mode" : "Switch to dark mode"
         );
     }
 
     updateThemeButton();
 
     themeToggle?.addEventListener("click", () => {
-        const current = root.getAttribute("data-theme");
-        const next = current === "dark" ? "light" : "dark";
-
-        root.setAttribute("data-theme", next);
-        localStorage.setItem("studymate-theme", next);
+        const nextTheme =
+            root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        root.setAttribute("data-theme", nextTheme);
+        localStorage.setItem("studymate-theme", nextTheme);
         updateThemeButton();
     });
 
-    // ----------------------------------
-    // Mobile sidebar
-    // ----------------------------------
-    const menuToggle = document.getElementById("menuToggle");
-    const sidebar = document.querySelector(".sidebar");
-    const sidebarOverlay = document.getElementById("sidebarOverlay");
+    // Mobile sidebar — selectors match the recovered HTML and CSS.
+    const menuToggle = document.getElementById("mobile-menu");
+    const sidebar = document.getElementById("sidebar");
 
     function closeSidebar() {
-        sidebar?.classList.remove("sidebar-open");
-        sidebarOverlay?.classList.remove("active");
+        sidebar?.classList.remove("open");
+        menuToggle?.setAttribute("aria-expanded", "false");
     }
 
+    menuToggle?.setAttribute("aria-expanded", "false");
     menuToggle?.addEventListener("click", () => {
-        sidebar?.classList.toggle("sidebar-open");
-        sidebarOverlay?.classList.toggle("active");
+        const isOpen = sidebar?.classList.toggle("open") ?? false;
+        menuToggle.setAttribute("aria-expanded", String(isOpen));
     });
-
-    sidebarOverlay?.addEventListener("click", closeSidebar);
 
     sidebar?.querySelectorAll("a").forEach(link => {
         link.addEventListener("click", closeSidebar);
     });
 
-    // ----------------------------------
-    // Smooth navigation
-    // ----------------------------------
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") closeSidebar();
+    });
+
+    // Smooth in-page navigation.
     document.querySelectorAll('a[href^="#"]').forEach(link => {
         link.addEventListener("click", event => {
-            const targetId = link.getAttribute("href");
-            const target = document.querySelector(targetId);
-
+            const target = document.querySelector(link.getAttribute("href"));
             if (!target) return;
-
             event.preventDefault();
-            target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
         });
     });
 
-    // ----------------------------------
-    // PDF upload feedback
-    // ----------------------------------
-    const uploadInput = document.getElementById("pdf");
-    const fileNameDisplay = document.getElementById("fileName");
-    const uploadForm = document.getElementById("uploadForm");
-    const uploadButton = document.getElementById("uploadButton");
+    // PDF upload feedback and client-side validation.
+    const uploadInput = document.getElementById("pdf-file");
+    const fileNameDisplay = document.getElementById("file-name");
+    const uploadForm = document.getElementById("upload-form");
+    const uploadButton = uploadForm?.querySelector('button[type="submit"]');
 
     uploadInput?.addEventListener("change", () => {
         const file = uploadInput.files?.[0];
@@ -92,194 +79,180 @@ document.addEventListener("DOMContentLoaded", () => {
                 : "No file selected";
         }
 
-        if (file && file.type !== "application/pdf") {
+        if (!file) return;
+
+        const isPdf =
+            file.type === "application/pdf" ||
+            file.name.toLowerCase().endsWith(".pdf");
+
+        if (!isPdf) {
             alert("Please select a PDF file.");
             uploadInput.value = "";
+            if (fileNameDisplay) fileNameDisplay.textContent = "No file selected";
+            return;
+        }
 
-            if (fileNameDisplay) {
-                fileNameDisplay.textContent = "No file selected";
-            }
+        if (file.size > 20 * 1024 * 1024) {
+            alert("Please choose a PDF smaller than 20 MB.");
+            uploadInput.value = "";
+            if (fileNameDisplay) fileNameDisplay.textContent = "No file selected";
         }
     });
 
-    uploadForm?.addEventListener("submit", () => {
+    uploadForm?.addEventListener("submit", event => {
         const file = uploadInput?.files?.[0];
-
         if (!file) {
-            alert("Please select a PDF file first.");
+            event.preventDefault();
+            alert("Please choose a PDF first.");
             return;
         }
 
         if (uploadButton) {
             uploadButton.disabled = true;
-            uploadButton.textContent = "Uploading PDF...";
+            uploadButton.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Uploading…';
         }
     });
 
-    // ----------------------------------
-    // Chat input helpers
-    // ----------------------------------
+    // Submit the tutor question with Enter.
     const questionInput = document.getElementById("question");
+    const chatForm = document.getElementById("chat-form");
 
     questionInput?.addEventListener("keydown", event => {
         if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
-
-            const askForm = document.getElementById("askForm");
-            askForm?.requestSubmit();
+            chatForm?.requestSubmit();
         }
     });
 
-    // ----------------------------------
-    // Quiz selection feedback
-    // ----------------------------------
-    document.querySelectorAll(".quiz-option input").forEach(input => {
+    // Quiz option selection and generation state.
+    document.querySelectorAll(".question-options input[type='radio']").forEach(input => {
         input.addEventListener("change", () => {
-            const group = input.closest(".quiz-options");
-
-            group?.querySelectorAll(".quiz-option").forEach(option => {
+            const group = input.closest(".question-options");
+            group?.querySelectorAll(".option").forEach(option => {
                 option.classList.remove("selected");
             });
-
-            input.closest(".quiz-option")?.classList.add("selected");
+            input.closest(".option")?.classList.add("selected");
         });
     });
 
-    // ----------------------------------
-    // Quiz generation loading state
-    // ----------------------------------
-    const quizForm = document.getElementById("quizForm");
-    const quizButton = document.getElementById("quizButton");
+    const quizForm = document.getElementById("quiz-form");
+    const quizButton = quizForm?.querySelector('button[type="submit"]');
 
     quizForm?.addEventListener("submit", () => {
         if (quizButton) {
             quizButton.disabled = true;
-            quizButton.textContent = "Generating quiz...";
+            quizButton.textContent = "Generating quiz…";
         }
     });
 
-    // ----------------------------------
-    // Flashcard preview interaction
-    // ----------------------------------
-    document.querySelectorAll(".flashcard-preview").forEach(card => {
-        card.addEventListener("click", () => {
-            card.classList.toggle("flipped");
-        });
-    });
+    // Feedback API: use the field names and endpoint implemented by Flask.
+    const feedbackMessage = document.getElementById("feedback-message");
+    const reportBox = document.getElementById("report-box");
+    const reportInput = document.getElementById("report-input");
 
-    // ----------------------------------
-    // Feedback
-    // ----------------------------------
-    window.sendFeedback = async function (rating) {
-        const buttons = document.querySelectorAll(".feedback-button");
+    function showFeedbackMessage(message, isError = false) {
+        if (!feedbackMessage) return;
+        feedbackMessage.textContent = message;
+        feedbackMessage.classList.toggle("error", isError);
+        feedbackMessage.setAttribute("role", "status");
+    }
 
-        buttons.forEach(button => {
-            button.disabled = true;
-        });
+    window.sendFeedback = async function (feedbackType, button) {
+        const buttons = document.querySelectorAll(".feedback-btn");
+        buttons.forEach(item => { item.disabled = true; });
 
         try {
             const response = await fetch("/feedback", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    rating: rating,
-                    page: window.location.pathname
+                    feedback_type: feedbackType,
+                    details: ""
                 })
             });
+            const data = await response.json();
 
-            if (!response.ok) {
-                throw new Error("Feedback request failed");
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || "Feedback could not be saved.");
             }
 
-            alert("Thank you for your feedback!");
-
+            showFeedbackMessage(data.message || "Thank you for your feedback.");
+            if (button) button.classList.add("selected");
         } catch (error) {
-            console.error("Feedback error:", error);
-            alert("We couldn't submit your feedback. Please try again.");
-
-            buttons.forEach(button => {
-                button.disabled = false;
-            });
+            console.error("StudyMate feedback error:", error);
+            showFeedbackMessage(
+                error.message || "We couldn't submit your feedback. Please try again.",
+                true
+            );
+            buttons.forEach(item => { item.disabled = false; });
         }
     };
 
     window.showReportBox = function () {
-        const reportBox = document.getElementById("reportBox");
-
-        if (reportBox) {
-            reportBox.hidden = !reportBox.hidden;
-        }
+        if (!reportBox) return;
+        reportBox.hidden = !reportBox.hidden;
+        if (!reportBox.hidden) reportInput?.focus();
     };
 
     window.sendReport = async function () {
-        const reportInput = document.getElementById("reportText");
-        const report = reportInput?.value.trim();
-
-        if (!report) {
-            alert("Please describe the problem first.");
+        const details = reportInput?.value.trim();
+        if (!details) {
+            showFeedbackMessage("Please describe the problem first.", true);
+            reportInput?.focus();
             return;
         }
 
+        const reportButton = reportBox?.querySelector("button");
+        if (reportButton) reportButton.disabled = true;
+
         try {
-            const response = await fetch("/report-problem", {
+            const response = await fetch("/feedback", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    report: report,
-                    page: window.location.pathname
+                    feedback_type: "report",
+                    details
                 })
             });
+            const data = await response.json();
 
-            if (!response.ok) {
-                throw new Error("Report request failed");
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || "Your report could not be saved.");
             }
 
-            alert("Thank you. Your report has been submitted.");
-
-            reportInput.value = "";
-
-            const reportBox = document.getElementById("reportBox");
+            showFeedbackMessage(data.message || "Thank you for your report.");
+            if (reportInput) reportInput.value = "";
             if (reportBox) reportBox.hidden = true;
-
         } catch (error) {
-            console.error("Report error:", error);
-            alert("We couldn't submit your report. Please try again.");
+            console.error("StudyMate report error:", error);
+            showFeedbackMessage(
+                error.message || "We couldn't submit your report. Please try again.",
+                true
+            );
+        } finally {
+            if (reportButton) reportButton.disabled = false;
         }
     };
 
-    // ----------------------------------
-    // Scroll reveal animations
-    // ----------------------------------
+    // Reveal elements as they enter the viewport.
     const revealElements = document.querySelectorAll(
-        ".reveal, .action-card, .feature-card"
+        ".action-card, .tool-card, .upload-panel, .chat-panel"
     );
 
     if ("IntersectionObserver" in window) {
-        const observer = new IntersectionObserver(
-            entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add("visible");
-                        observer.unobserve(entry.target);
-                    }
-                });
-            },
-            { threshold: 0.12 }
-        );
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add("visible");
+                observer.unobserve(entry.target);
+            });
+        }, { threshold: 0.12 });
 
-        revealElements.forEach(element => {
-            element.classList.add("reveal");
-            observer.observe(element);
-        });
+        revealElements.forEach(element => observer.observe(element));
     } else {
-        revealElements.forEach(element => {
-            element.classList.add("visible");
-        });
+        revealElements.forEach(element => element.classList.add("visible"));
     }
 
-    console.log("StudyMate AI frontend initialized.");
+    console.info("StudyMate AI frontend initialized.");
 });
