@@ -68,17 +68,20 @@ class StudyMateAppTests(unittest.TestCase):
         self.assertIn(b"Student Beta limit", response.data)
 
     def test_quiz_generation_and_submission(self):
-        questions = [{
-            "question": "What does photosynthesis convert?",
-            "options": [
-                "Light energy into chemical energy",
-                "Chemical energy into sound",
-                "Water into oxygen only",
-                "Heat into matter",
-            ],
-            "answer": 0,
-            "explanation": "The material states that photosynthesis converts light energy into chemical energy.",
-        }]
+        questions = [
+            {
+                "question": f"Photosynthesis practice question {index + 1}: what does it convert?",
+                "options": [
+                    "Light energy into chemical energy",
+                    "Chemical energy into sound",
+                    "Water into oxygen only",
+                    "Heat into matter",
+                ],
+                "answer": 0,
+                "explanation": "The material states that photosynthesis converts light energy into chemical energy.",
+            }
+            for index in range(5)
+        ]
 
         with patch.object(study_app, "get_study_material", return_value="Photosynthesis converts light energy into chemical energy."), patch.object(
             study_app, "ask_gemini", return_value=json.dumps(questions)
@@ -97,7 +100,9 @@ class StudyMateAppTests(unittest.TestCase):
         response = self.client.post("/submit_quiz", data={"question_0": "0"})
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Your quiz result", response.data)
-        self.assertFalse(os.path.exists(study_app.get_quiz_path()))
+        with self.client.session_transaction() as session:
+            user_id = session["user_id"]
+        self.assertFalse(os.path.exists(os.path.join(self.temp_dir.name, user_id, "quiz.json")))
 
     def test_feedback_endpoint(self):
         response = self.client.post(
