@@ -124,6 +124,15 @@ class StudyMateAppTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.get_json()["success"])
 
+    def test_rejects_fake_pdf_content(self):
+        response = self.client.post(
+            "/upload",
+            data={"pdf": (io.BytesIO(b"not really a PDF"), "notes.pdf")},
+            content_type="multipart/form-data",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"does not appear to be a valid PDF", response.data)
+
     def test_rejects_non_pdf_upload(self):
         response = self.client.post(
             "/upload",
