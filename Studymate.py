@@ -31,6 +31,7 @@ app.config.update(
     MAX_CONTENT_LENGTH=20 * 1024 * 1024,
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=bool(os.environ.get("RENDER")),
 )
 
 ALLOWED_EXTENSIONS = {"pdf"}
@@ -89,6 +90,26 @@ RETRYABLE_ERROR_MESSAGES = {
 # USER SESSION
 # =========================================================
 
+@app.after_request
+def add_security_headers(response):
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    response.headers.setdefault(
+        "Referrer-Policy",
+        "strict-origin-when-cross-origin"
+    )
+    response.headers.setdefault(
+        "Permissions-Policy",
+        "camera=(), microphone=(), geolocation=()"
+    )
+    if os.environ.get("RENDER"):
+        response.headers.setdefault(
+            "Strict-Transport-Security",
+            "max-age=31536000; includeSubDomains"
+        )
+    return response
+
+
 def get_user_id():
     current_id = session.get("user_id")
     try:
@@ -100,14 +121,19 @@ def get_user_id():
 
 def get_beta_usage():
     return {
-        "chat_questions": session.get(
-            "chat_questions",
-            0
-        ),
-        "quiz_generations": session.get(
-            "quiz_generations",
-            0
-        )
+        "chat_questions": session.get("chat_questions", 0),
+        "quiz_generations": session.get("quiz_generations", 0)
+    }
+
+
+@app.context_processor
+def inject_beta_limits():
+    return {
+        "beta_usage": get_beta_usage(),
+        "beta_limits": {
+            "chat_questions": MAX_CHAT_QUESTIONS,
+            "quiz_generations": MAX_QUIZ_GENERATIONS
+        }
     }
 
 
@@ -390,11 +416,13 @@ def upload():
 
         with fitz.open(filepath) as document:
             if document.needs_pass:
+                os.remove(filepath)
                 return render_template(
                     "index.html",
                     error="This PDF is password-protected. Please upload an unlocked copy."
                 )
             if document.page_count > MAX_PDF_PAGES:
+                os.remove(filepath)
                 return render_template(
                     "index.html",
                     error=f"Please upload a PDF with no more than {MAX_PDF_PAGES} pages."
