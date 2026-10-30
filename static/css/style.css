@@ -2199,3 +2199,11 @@ select:focus-visible, textarea:focus-visible {
         animation-iteration-count: 1 !important;
     }
 }
+
+.beta-limit-note {
+    margin: 9px 0 12px !important;
+    padding-top: 9px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted) !important;
+    font-size: 10px !important;
+}
