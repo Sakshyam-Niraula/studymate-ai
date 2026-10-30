@@ -1785,3 +1785,9 @@ a {
     }
 
 }
+
+
+/* Feedback report disclosure */
+.report-box.is-open {
+    display: block;
+}
