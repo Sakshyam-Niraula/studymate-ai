@@ -191,8 +191,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.showReportBox = function () {
         if (!reportBox) return;
-        reportBox.hidden = !reportBox.hidden;
-        if (!reportBox.hidden) reportInput?.focus();
+        const isOpen = reportBox.classList.toggle("is-open");
+        if (isOpen) reportInput?.focus();
     };
 
     window.sendReport = async function () {
