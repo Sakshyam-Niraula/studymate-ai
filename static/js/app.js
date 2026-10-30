@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             showFeedbackMessage(data.message || "Thank you for your report.");
             if (reportInput) reportInput.value = "";
-            if (reportBox) reportBox.hidden = true;
+            reportBox?.classList.remove("is-open");
         } catch (error) {
             console.error("StudyMate report error:", error);
             showFeedbackMessage(
