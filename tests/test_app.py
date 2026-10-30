@@ -59,6 +59,18 @@ class StudyMateAppTests(unittest.TestCase):
         with self.client.session_transaction() as session:
             self.assertEqual(session.get("chat_questions"), 1)
 
+    def test_failed_ai_request_does_not_consume_chat_limit(self):
+        with patch.object(study_app, "get_study_material", return_value="Sample study material."), patch.object(
+            study_app,
+            "ask_gemini",
+            return_value="StudyMate couldn't complete that AI request. Please try again.",
+        ):
+            response = self.client.post("/ask", data={"question": "Explain this"})
+
+        self.assertEqual(response.status_code, 200)
+        with self.client.session_transaction() as session:
+            self.assertEqual(session.get("chat_questions", 0), 0)
+
     def test_chat_beta_limit_is_preserved(self):
         with self.client.session_transaction() as session:
             session["chat_questions"] = study_app.MAX_CHAT_QUESTIONS
